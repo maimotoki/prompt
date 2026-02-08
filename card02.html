@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>北欧カード背景｜プロンプトメーカー（JP表示→EN生成 / 完全版）</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#101722;
+      --muted:#8a95ad;
+      --text:#e9eefc;
+      --line:rgba(255,255,255,.10);
+      --accent:#7dd3fc;
+      --accent2:#a7f3d0;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(125,211,252,.12), transparent 60%),
+        radial-gradient(900px 700px at 85% 30%, rgba(167,243,208,.10), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    header{
+      padding:22px 16px 10px;
+      max-width:1180px;
+      margin:0 auto;
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    p.sub{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .wrap{
+      max-width:1180px;
+      margin:0 auto;
+      padding:14px 16px 22px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    }
+    .card h2{
+      margin:0 0 8px;
+      font-size:14px;
+      letter-spacing:.02em;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr}
+    }
+    .group{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background: rgba(0,0,0,.14);
+    }
+    .group h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color:var(--accent);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .hint{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    label{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:7px 8px;
+      border-radius:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    label:hover{background: rgba(255,255,255,.04);}
+    input[type="checkbox"], input[type="radio"]{
+      margin-top:3px;
+      accent-color: var(--accent);
+    }
+    .jp{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:650;
+    }
+    .btn:hover{border-color: rgba(125,211,252,.40);}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(125,211,252,.22), rgba(167,243,208,.16));
+      border-color: rgba(125,211,252,.35);
+    }
+    .btn.danger:hover{border-color: rgba(251,113,133,.55);}
+    textarea{
+      width:100%;
+      min-height:160px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      padding:10px 12px;
+      font-size:12px;
+      resize:vertical;
+      outline:none;
+    }
+    textarea:focus{border-color: rgba(125,211,252,.45);}
+    .small{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(0,0,0,.14);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill strong{color:var(--text); font-weight:800;}
+    .pill.warn{border-color: rgba(251,191,36,.35)}
+    .pill.bad{border-color: rgba(251,113,133,.35)}
+    .divider{
+      height:1px;
+      background: var(--line);
+      margin:10px 0;
+    }
+    .select{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding:9px 10px;
+      font-size:12px;
+      outline:none;
+    }
+    .select:focus{border-color: rgba(125,211,252,.45);}
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      color: rgba(233,238,252,.92);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>北欧カード背景｜チェックボックス式 プロンプトメーカー（日本語で選ぶ→英語生成 / 両方出力）</h1>
+    <p class="sub">「完成版」：大柄 / カラフル / 動物（大人・ポップ）まで対応。HTML1枚で動きます。</p>
+  </header>
+
+  <main class="wrap">
+    <!-- Left: Controls -->
+    <section class="card">
+      <h2>設定</h2>
+
+      <div class="grid">
+        <!-- VARIANT (single) -->
+        <div class="group" id="group-variant">
+          <h3>
+            VERSION（完成版）
+            <span class="hint">1つ選択</span>
+          </h3>
+
+          <label>
+            <input type="radio" name="variant" value="base" data-jp="① 基本（上品・万能）" checked>
+            <div>
+              <div>① Base (Elegant Botanical)</div>
+              <div class="jp">上品・万能（名刺/ショップカード向き）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="variant" value="large" data-jp="② 大柄（カード映え特化）">
+            <div>
+              <div>② Large Scale (Luxury Card)</div>
+              <div class="jp">要素を大きく・余白多め（ロゴ載せやすい）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="variant" value="colorful" data-jp="③ カラフル北欧（ポップ寄り）">
+            <div>
+              <div>③ Colorful Scandinavian</div>
+              <div class="jp">海外向け・セット販売向き（mutedだけど鮮やか）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="variant" value="animal_adult" data-jp="④ 動物ミックス（大人向け）">
+            <div>
+              <div>④ Nordic Animal × Botanical (Adult)</div>
+              <div class="jp">動物は控えめ（大人雑貨・カード向き）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="variant" value="animal_pop" data-jp="⑤ 動物ポップ（かわいい）">
+            <div>
+              <div>⑤ Playful Scandinavian Animals</div>
+              <div class="jp">子ども/ポストカード/文具向き</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Tip</strong> 迷ったら①→②→③の順で量産が楽</span>
+          </div>
+        </div>
+
+        <!-- USAGE (single) -->
+        <div class="group" id="group-usage">
+          <h3>
+            USAGE（用途）
+            <span class="hint">1つ選択</span>
+          </h3>
+
+          <label>
+            <input type="radio" name="usage" value="card" data-jp="カード背景（名刺/ショップカード）" checked>
+            <div>
+              <div>Card / Stationery background</div>
+              <div class="jp">カード背景（名刺/ショップカード）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="usage" value="seamless" data-jp="シームレスパターン">
+            <div>
+              <div>Seamless repeating pattern</div>
+              <div class="jp">シームレスパターン</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="usage" value="poster" data-jp="印刷用ポスター（壁アート）">
+            <div>
+              <div>Printable wall art</div>
+              <div class="jp">印刷用ポスター（壁アート）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="usage" value="brand" data-jp="ブランディング背景">
+            <div>
+              <div>Branding background</div>
+              <div class="jp">ブランディング背景</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill warn"><strong>Note</strong> 名刺は「card」推奨（余白が効く）</span>
+          </div>
+        </div>
+
+        <!-- COLOR PALETTE (single) -->
+        <div class="group" id="group-color">
+          <h3>
+            COLOR（配色）
+            <span class="hint">1つ選択</span>
+          </h3>
+
+          <label>
+            <input type="radio" name="color" value="muted earthy tones with pastel accents" data-jp="くすみアースカラー＋パステル" checked>
+            <div>
+              <div>Muted earthy + pastel accents</div>
+              <div class="jp">くすみアースカラー＋パステル</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="color" value="dusty pink, sage green, mustard yellow, cream, with subtle black accents" data-jp="ダスティピンク/セージ/マスタード/クリーム/黒">
+            <div>
+              <div>Dusty pink / sage / mustard / cream / black</div>
+              <div class="jp">ダスティピンク/セージ/マスタード/クリーム/黒</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="color" value="soft mint, beige, olive green, charcoal" data-jp="ソフトミント/ベージュ/オリーブ/チャコール">
+            <div>
+              <div>Soft mint / beige / olive / charcoal</div>
+              <div class="jp">ソフトミント/ベージュ/オリーブ/チャコール</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="color" value="dusty pink, soft coral, mustard yellow, teal, sage green, with black accents" data-jp="ダスティピンク/コーラル/マスタード/ティール/セージ/黒">
+            <div>
+              <div>Colorful (muted yet vibrant)</div>
+              <div class="jp">カラフル（mutedだけど鮮やか）</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Tip</strong> ③を選ぶと「カラフル寄り」が自動で効く</span>
+          </div>
+        </div>
+
+        <!-- SCALE / SPACING (single) -->
+        <div class="group" id="group-scale">
+          <h3>
+            SCALE（柄の大きさ）
+            <span class="hint">1つ選択</span>
+          </h3>
+
+          <label>
+            <input type="radio" name="scale" value="normal" data-jp="標準" checked>
+            <div>
+              <div>Normal</div>
+              <div class="jp">標準</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="scale" value="large" data-jp="大柄（要素大きめ）">
+            <div>
+              <div>Large scale (oversized elements)</div>
+              <div class="jp">大柄（要素大きめ）</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="scale" value="sparse" data-jp="大柄＋余白多め">
+            <div>
+              <div>Large scale + more negative space</div>
+              <div class="jp">大柄＋余白多め</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="radio" name="scale" value="dense" data-jp="細かめ（要素多め）">
+            <div>
+              <div>Smaller elements + denser layout</div>
+              <div class="jp">細かめ（要素多め）</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Card</strong> 名刺は「sparse」か「large」がおすすめ</span>
+          </div>
+        </div>
+
+        <!-- MOOD (multi) -->
+        <div class="group" id="group-mood">
+          <h3>
+            MOOD（雰囲気）
+            <span class="hint">複数OK</span>
+          </h3>
+
+          <label>
+            <input type="checkbox" class="mood" value="calm and cozy" data-jp="落ち着き・居心地" checked>
+            <div>
+              <div>calm and cozy</div>
+              <div class="jp">落ち着き・居心地</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="mood" value="warm and minimal" data-jp="温かくミニマル" checked>
+            <div>
+              <div>warm and minimal</div>
+              <div class="jp">温かくミニマル</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="mood" value="sophisticated and elegant" data-jp="洗練・上品">
+            <div>
+              <div>sophisticated and elegant</div>
+              <div class="jp">洗練・上品</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="mood" value="soft and artistic" data-jp="柔らかくアート">
+            <div>
+              <div>soft and artistic</div>
+              <div class="jp">柔らかくアート</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="mood" value="joyful and friendly" data-jp="明るく親しみやすい">
+            <div>
+              <div>joyful and friendly</div>
+              <div class="jp">明るく親しみやすい</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Tip</strong> ⑤は「joyful」入れると安定</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <!-- BOTANICAL MOTIF (multi) -->
+        <div class="group" id="group-botanical">
+          <h3>
+            BOTANICAL（植物モチーフ）
+            <span class="hint">複数OK</span>
+          </h3>
+
+          <label>
+            <input type="checkbox" class="botanical" value="monstera leaves" data-jp="モンステラ" checked>
+            <div>
+              <div>monstera leaves</div>
+              <div class="jp">モンステラ</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="botanical" value="tropical leaves" data-jp="トロピカルリーフ" checked>
+            <div>
+              <div>tropical leaves</div>
+              <div class="jp">トロピカルリーフ</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="botanical" value="abstract botanical shapes" data-jp="抽象ボタニカル形状" checked>
+            <div>
+              <div>abstract botanical shapes</div>
+              <div class="jp">抽象ボタニカル形状</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="botanical" value="organic leaf silhouettes" data-jp="葉のシルエット">
+            <div>
+              <div>organic leaf silhouettes</div>
+              <div class="jp">葉のシルエット</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="botanical" value="flowing plant forms" data-jp="流れる植物フォーム">
+            <div>
+              <div>flowing plant forms</div>
+              <div class="jp">流れる植物フォーム</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Note</strong> 動物版でも植物を残すと北欧感が強い</span>
+          </div>
+        </div>
+
+        <!-- ANIMALS (multi) -->
+        <div class="group" id="group-animals">
+          <h3>
+            ANIMALS（動物）
+            <span class="hint">動物版で有効</span>
+          </h3>
+
+          <label>
+            <input type="checkbox" class="animals" value="fox" data-jp="きつね">
+            <div>
+              <div>fox</div>
+              <div class="jp">きつね</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="animals" value="bear" data-jp="くま">
+            <div>
+              <div>bear</div>
+              <div class="jp">くま</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="animals" value="deer" data-jp="しか">
+            <div>
+              <div>deer</div>
+              <div class="jp">しか</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="animals" value="bird" data-jp="とり">
+            <div>
+              <div>bird</div>
+              <div class="jp">とり</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="animals" value="rabbit" data-jp="うさぎ">
+            <div>
+              <div>rabbit</div>
+              <div class="jp">うさぎ</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill bad"><strong>Tip</strong> ④⑤の時だけONでOK</span>
+          </div>
+        </div>
+
+        <!-- QUALITY (multi) -->
+        <div class="group" id="group-quality">
+          <h3>
+            QUALITY（品質）
+            <span class="hint">複数OK</span>
+          </h3>
+
+          <label>
+            <input type="checkbox" class="quality" value="clean shapes" data-jp="形状がクリーン" checked>
+            <div>
+              <div>clean shapes</div>
+              <div class="jp">形状がクリーン</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="quality" value="balanced composition" data-jp="構図が整っている" checked>
+            <div>
+              <div>balanced composition</div>
+              <div class="jp">構図が整っている</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="quality" value="no text" data-jp="文字なし" checked>
+            <div>
+              <div>no text</div>
+              <div class="jp">文字なし</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" class="quality" value="no logo" data-jp="ロゴなし" checked>
+            <div>
+              <div>no logo</div>
+              <div class="jp">ロゴなし</div>
+            </div>
+          </label>
+        </div>
+
+        <!-- ADVANCED -->
+        <div class="group" id="group-advanced">
+          <h3>
+            ADVANCED（微調整）
+            <span class="hint">任意</span>
+          </h3>
+
+          <label>
+            <input type="checkbox" id="optSeamless" data-jp="シームレス強化" checked>
+            <div>
+              <div>Boost seamlessness</div>
+              <div class="jp">パターンの繰り返し感を強化</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" id="optCardSpace" data-jp="ロゴ用余白を増やす">
+            <div>
+              <div>More logo-friendly space</div>
+              <div class="jp">ロゴを載せやすい余白を増やす</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" id="optLessTexture" data-jp="テクスチャ控えめ">
+            <div>
+              <div>Reduce paper/grain texture</div>
+              <div class="jp">紙っぽい粒状感を減らす</div>
+            </div>
+          </label>
+
+          <label>
+            <input type="checkbox" id="optExtraContrast" data-jp="黒アクセントを少し強める">
+            <div>
+              <div>Slightly stronger black accents</div>
+              <div class="jp">黒のコントラストを少し強める</div>
+            </div>
+          </label>
+
+          <div style="margin-top:10px">
+            <span class="pill"><strong>Note</strong> 「テクスチャ控えめ」は印刷向き</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid">
+        <!-- FIXED BASE -->
+        <div class="group">
+          <h3>BASE（固定）<span class="hint">軸（ブレ防止）</span></h3>
+          <textarea id="baseEn" readonly></textarea>
+          <div class="small">※ここは固定（品質と北欧感の担保）。</div>
+        </div>
+
+        <!-- NEGATIVE -->
+        <div class="group">
+          <h3>NEGATIVE（固定）<span class="hint">失敗防止</span></h3>
+          <textarea id="negative" readonly></textarea>
+          <div class="small">※AIによっては <code>--no</code> を外して「ネガティブ欄」に貼ってね。</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btnBuild">生成（Generate）</button>
+        <button class="btn" id="btnCopyEn">英語をコピー</button>
+        <button class="btn" id="btnCopyJp">日本語をコピー</button>
+        <button class="btn" id="btnRandom">ランダム</button>
+        <button class="btn danger" id="btnReset">リセット</button>
+
+        <span class="pill" id="status" aria-live="polite"><strong>Ready</strong> 選んで生成</span>
+      </div>
+
+      <div class="small">
+        ✅ 使い方：チェック →「生成」→ English Prompt を画像生成AIへ貼り付け。日本語は確認・共有用。<br/>
+        ✅ カード背景は「Scale: sparse / large」「More logo-friendly space」が強い。<br/>
+        ✅ 動物版（④⑤）は ANIMALS を1〜3体にすると上品に仕上がりやすい。
+      </div>
+    </section>
+
+    <!-- Right: Output -->
+    <aside class="card">
+      <h2>出力</h2>
+
+      <div class="group">
+        <h3>English Prompt（生成用）<span class="hint">そのまま貼る</span></h3>
+        <textarea id="outEn" placeholder="ここに英語プロンプトが出ます"></textarea>
+        <div class="row">
+          <select class="select" id="lineBreakMode" title="改行モード">
+            <option value="paragraph" selected>段落（読みやすい）</option>
+            <option value="single">1行（貼りやすい）</option>
+          </select>
+          <span class="pill"><strong>Tip</strong> 一部AIは「1行」で安定</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="group">
+        <h3>日本語確認文（共有用）<span class="hint">内容チェック</span></h3>
+        <textarea id="outJp" placeholder="ここに日本語確認文が出ます"></textarea>
+        <div class="small">※日本語は「何を指定したか」の確認表示（英語が生成本体）。</div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // ===================== Fixed Text =====================
+    const BASE_EN = [
+      "Elegant Scandinavian abstract background illustration.",
+      "Nordic design with mid-century modern aesthetics.",
+      "Flat vector style with simple, organic flowing shapes.",
+      "Minimalist yet playful, sophisticated, balanced layout.",
+      "High resolution, premium interior art style."
+    ].join("\\n");
+
+    const NEGATIVE = "--no photorealistic, 3d, realistic texture, glossy, heavy shadows, strong gradients, text, logo";
+
+    // ===================== Templates (Complete Versions) =====================
+    // These are "modifier blocks" that get combined with user selections.
+    const VARIANT_BLOCKS = {
+      base: {
+        titleEn: "Base (Elegant Botanical)",
+        titleJp: "① 基本（上品・万能）",
+        leadEn: [
+          "Elegant Scandinavian abstract botanical background illustration.",
+          "Nordic design with mid-century modern aesthetics.",
+          "Flat vector style with simple, organic flowing shapes.",
+          "Minimalist yet playful, sophisticated, balanced layout."
+        ],
+        extraEn: [
+          "High resolution, premium interior art style."
+        ]
+      },
+      large: {
+        titleEn: "Large Scale (Luxury Card)",
+        titleJp: "② 大柄（カード映え特化）",
+        leadEn: [
+          "Elegant Scandinavian abstract botanical background illustration.",
+          "Nordic mid-century modern design.",
+          "Flat vector illustration with bold, oversized shapes."
+        ],
+        extraEn: [
+          "Minimalist, sophisticated, calm and cozy."
+        ]
+      },
+      colorful: {
+        titleEn: "Colorful Scandinavian",
+        titleJp: "③ カラフル北欧（ポップ寄り）",
+        leadEn: [
+          "Colorful Scandinavian abstract botanical background illustration.",
+          "Nordic design with mid-century modern aesthetics.",
+          "Flat vector style with organic flowing shapes."
+        ],
+        extraEn: [
+          "Muted yet vibrant, cheerful but refined."
+        ]
+      },
+      animal_adult: {
+        titleEn: "Nordic Animal × Botanical (Adult)",
+        titleJp: "④ 動物ミックス（大人向け）",
+        leadEn: [
+          "Scandinavian abstract animal and botanical background illustration.",
+          "Flat vector style with minimalist animal silhouettes.",
+          "Warm Scandinavian design with a calm and cozy atmosphere."
+        ],
+        extraEn: [
+          "Sophisticated and subtle animal integration."
+        ]
+      },
+      animal_pop: {
+        titleEn: "Playful Scandinavian Animals",
+        titleJp: "⑤ 動物ポップ（かわいい）",
+        leadEn: [
+          "Playful Scandinavian animal background illustration.",
+          "Flat vector style with bold, simple shapes.",
+          "Joyful Nordic illustration with a friendly mood."
+        ],
+        extraEn: [
+          "Mid-century modern, cute but clean composition."
+        ]
+      }
+    };
+
+    // ===================== Helpers =====================
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function getRadio(name){
+      return document.querySelector(`input[name="${name}"]:checked`);
+    }
+    function getCheckedValues(cls){
+      return $$(`input.${cls}:checked`).map(el => el.value);
+    }
+    function getCheckedJp(cls){
+      return $$(`input.${cls}:checked`).map(el => el.dataset.jp || "");
+    }
+    function jpList(arr){
+      return arr.filter(Boolean).join("／");
+    }
+    function joinNatural(arr){
+      const a = arr.filter(Boolean);
+      if (!a.length) return "";
+      if (a.length === 1) return a[0];
+      if (a.length === 2) return `${a[0]} and ${a[1]}`;
+      return `${a.slice(0,-1).join(", ")}, and ${a[a.length-1]}`;
+    }
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        return true;
+      }catch(e){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      }
+    }
+    function setStatus(main, sub){
+      $("#status").innerHTML = `<strong>${main}</strong> ${sub || ""}`;
+    }
+    function formatOutput(text){
+      const mode = $("#lineBreakMode").value;
+      if (mode === "single"){
+        return text.replace(/\\n+/g, " ").replace(/\\s+/g, " ").trim();
+      }
+      return text.trim();
+    }
+
+    // ===================== Logic: Usage mapping =====================
+    function usageBlock(usage){
+      switch(usage){
+        case "card":
+          return {
+            en: [
+              "Designed especially for card and stationery backgrounds.",
+              "Logo-friendly layout."
+            ],
+            jp: "カード背景（名刺/ショップカード）"
+          };
+        case "seamless":
+          return {
+            en: [
+              "Designed as a seamless repeating pattern."
+            ],
+            jp: "シームレスパターン"
+          };
+        case "poster":
+          return {
+            en: [
+              "Designed as printable wall art."
+            ],
+            jp: "印刷用ポスター（壁アート）"
+          };
+        case "brand":
+          return {
+            en: [
+              "Designed as a branding background."
+            ],
+            jp: "ブランディング背景"
+          };
+        default:
+          return { en: [], jp: "" };
+      }
+    }
+
+    // ===================== Logic: Scale mapping =====================
+    function scaleBlock(scale){
+      switch(scale){
+        case "large":
+          return [
+            "Large-scale abstract elements with oversized shapes.",
+            "Fewer elements for a stronger, cleaner look."
+          ];
+        case "sparse":
+          return [
+            "Large-scale elements with generous negative space.",
+            "Fewer oversized shapes, more breathing room."
+          ];
+        case "dense":
+          return [
+            "Smaller elements with a denser layout.",
+            "More motifs and tighter spacing."
+          ];
+        default:
+          return [];
+      }
+    }
+
+    // ===================== Advanced options =====================
+    function advancedBlocks(){
+      const blocks = [];
+      const jp = [];
+
+      if ($("#optSeamless").checked){
+        blocks.push("Evenly distributed elements, consistent spacing, seamless tiling.");
+        jp.push("シームレス強化");
+      }
+      if ($("#optCardSpace").checked){
+        blocks.push("More negative space areas suitable for placing a logo or text.");
+        jp.push("ロゴ用余白を増やす");
+      }
+      if ($("#optLessTexture").checked){
+        blocks.push("Minimal texture, avoid heavy grain or paper noise.");
+        jp.push("テクスチャ控えめ");
+      }
+      if ($("#optExtraContrast").checked){
+        blocks.push("Slightly stronger black accents for crisp contrast.");
+        jp.push("黒アクセントを少し強める");
+      }
+      return { en: blocks, jp };
+    }
+
+    // ===================== Build =====================
+    function build(){
+      const v = getRadio("variant");
+      const u = getRadio("usage");
+      const c = getRadio("color");
+      const s = getRadio("scale");
+
+      const moods = getCheckedValues("mood");
+      const moodJp = getCheckedJp("mood");
+
+      const botanicals = getCheckedValues("botanical");
+      const botanicalJp = getCheckedJp("botanical");
+
+      const animals = getCheckedValues("animals");
+      const animalJp = getCheckedJp("animals");
+
+      const quality = getCheckedValues("quality");
+      const qualityJp = getCheckedJp("quality");
+
+      // Guardrails
+      const variant = v.value;
+      const isAnimalVariant = (variant === "animal_adult" || variant === "animal_pop");
+
+      if (!moods.length){
+        setStatus("Need", "MOODを1つ以上選んでね");
+        return;
+      }
+      if (!botanicals.length && !isAnimalVariant){
+        setStatus("Need", "植物モチーフを1つ以上選んでね");
+        return;
+      }
+      if (isAnimalVariant && animals.length === 0){
+        // Allow but warn; auto-suggest
+        setStatus("Warn", "動物版なのでANIMALSも1つ選ぶと安定");
+      }
+
+      const variantBlock = VARIANT_BLOCKS[variant];
+      const parts = [];
+
+      // Variant lead
+      parts.push(...variantBlock.leadEn);
+      parts.push("");
+
+      // Style line for Nordic vibe
+      if (variant === "base") parts.push("Hygge-inspired Scandinavian art.");
+      if (variant === "large") parts.push("Scandinavian interior wall art style.");
+      if (variant === "colorful") parts.push("Modern Nordic pattern design.");
+      if (variant === "animal_adult") parts.push("Minimalist Nordic illustration style.");
+      if (variant === "animal_pop") parts.push("Playful Nordic storybook feel.");
+
+      // Feature line (motifs)
+      const botanicalText = joinNatural(botanicals);
+      const animalText = joinNatural(animals);
+
+      if (isAnimalVariant){
+        const animalPhrase = animals.length
+          ? `stylized Nordic animals such as ${animalText}`
+          : "stylized Nordic animals";
+        const botanicalPhrase = botanicals.length
+          ? `integrated with ${joinNatural(botanicals)}`
+          : "integrated with abstract botanical shapes";
+
+        if (variant === "animal_adult"){
+          parts.push(`Flat vector illustration featuring ${animalPhrase}, ${botanicalPhrase}.`);
+          parts.push("Animals are subtle, minimal silhouettes integrated into the composition.");
+        } else {
+          parts.push(`Flat vector illustration featuring cute ${animalPhrase}, combined with abstract leaves and botanical elements.`);
+          parts.push("Bold simple shapes, friendly and cheerful.");
+        }
+      } else {
+        parts.push(`Flat vector illustration featuring ${botanicalText}.`);
+      }
+
+      // Scale
+      const scaleLines = scaleBlock(s.value);
+      if (scaleLines.length) parts.push(...scaleLines);
+
+      // Color (variant-aware)
+      // If colorful variant is selected but user picked muted palette, still keep "muted yet vibrant" line from template.
+      parts.push(`Color palette: ${c.value}.`);
+
+      // Mood (normalize)
+      // Make it a clean phrase
+      const moodText = joinNatural(moods);
+      parts.push(`Mood: ${moodText}.`);
+
+      // Usage
+      const ub = usageBlock(u.value);
+      parts.push(...ub.en);
+
+      // Advanced
+      const adv = advancedBlocks();
+      if (adv.en.length) parts.push(...adv.en);
+
+      // Quality
+      const qText = quality.length ? joinNatural(quality) : "clean shapes, balanced composition, no text, no logo";
+      parts.push(`${qText.charAt(0).toUpperCase() + qText.slice(1)}.`);
+
+      // High quality (variant extra)
+      parts.push(...variantBlock.extraEn);
+
+      // Negative
+      parts.push("");
+      parts.push(NEGATIVE);
+
+      const enRaw = parts.join("\\n");
+      const en = formatOutput(enRaw);
+
+      // Japanese confirmation
+      const jpLines = [];
+      jpLines.push("【北欧カード背景｜設定（確認用）】");
+      jpLines.push(`VERSION：${v.dataset.jp}`);
+      jpLines.push(`USAGE：${u.dataset.jp}`);
+      jpLines.push(`COLOR：${c.dataset.jp}`);
+      jpLines.push(`SCALE：${s.dataset.jp}`);
+      jpLines.push(`MOOD：${jpList(moodJp)}`);
+      jpLines.push(`BOTANICAL：${jpList(botanicalJp) || "（未選択）"}`);
+      jpLines.push(`ANIMALS：${jpList(animalJp) || "（未選択）"}`);
+      jpLines.push(`QUALITY：${jpList(qualityJp) || "形状がクリーン／構図が整っている／文字なし／ロゴなし"}`);
+      if (adv.jp.length) jpLines.push(`ADVANCED：${jpList(adv.jp)}`);
+      jpLines.push("");
+      jpLines.push("※生成には「English Prompt」を使用します。");
+
+      $("#outEn").value = en;
+      $("#outJp").value = jpLines.join("\\n");
+
+      if (!(variant === "animal_adult" || variant === "animal_pop") || animals.length){
+        setStatus("Done", "生成しました");
+      }
+    }
+
+    // ===================== Auto behavior =====================
+    function setAnimalEnabled(enabled){
+      const group = $("#group-animals");
+      const inputs = $$("input.animals");
+      inputs.forEach(el => el.disabled = !enabled);
+
+      group.style.opacity = enabled ? "1" : ".55";
+      group.style.filter = enabled ? "none" : "grayscale(0.2)";
+    }
+
+    function ensureAnimalDefaults(){
+      // If none checked, check fox + bird by default
+      const inputs = $$("input.animals");
+      const any = inputs.some(i => i.checked);
+      if (!any){
+        const fox = inputs.find(i => i.value === "fox");
+        const bird = inputs.find(i => i.value === "bird");
+        if (fox) fox.checked = true;
+        if (bird) bird.checked = true;
+      }
+    }
+
+    function applyVariantSmartDefaults(variant){
+      // Smart defaults when switching variant
+      if (variant === "large"){
+        // more card-friendly
+        document.querySelector('input[name="scale"][value="sparse"]').checked = true;
+        $("#optCardSpace").checked = true;
+      }
+      if (variant === "colorful"){
+        // pick colorful palette
+        document.querySelector('input[name="color"][value="dusty pink, soft coral, mustard yellow, teal, sage green, with black accents"]').checked = true;
+        // mood add joyful optionally
+        const joyful = $$("input.mood").find(i => i.value === "joyful and friendly");
+        if (joyful) joyful.checked = true;
+      }
+      if (variant === "animal_adult"){
+        setAnimalEnabled(true);
+        ensureAnimalDefaults();
+        // keep muted palette
+        document.querySelector('input[name="color"][value="muted earthy tones with pastel accents"]').checked = true;
+        // mood calm/warm recommended
+        $$("input.mood").forEach(i => {
+          if (i.value === "calm and cozy" || i.value === "warm and minimal") i.checked = true;
+        });
+      }
+      if (variant === "animal_pop"){
+        setAnimalEnabled(true);
+        ensureAnimalDefaults();
+        // more lively palette (but still soft)
+        document.querySelector('input[name="color"][value="dusty pink, soft coral, mustard yellow, teal, sage green, with black accents"]').checked = true;
+        // mood joyful recommended
+        const joyful = $$("input.mood").find(i => i.value === "joyful and friendly");
+        if (joyful) joyful.checked = true;
+      }
+      if (variant === "base"){
+        setAnimalEnabled(false);
+      }
+    }
+
+    // ===================== Randomize =====================
+    function randomPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function randomize(){
+      // Variant random among 5
+      const variants = $$('input[name="variant"]');
+      randomPick(variants).checked = true;
+
+      // Usage: card or seamless mostly
+      const usages = $$('input[name="usage"]');
+      const usageBias = Math.random() < 0.7 ? "card" : "seamless";
+      usages.forEach(u => u.checked = (u.value === usageBias));
+
+      // Color random
+      const colors = $$('input[name="color"]');
+      randomPick(colors).checked = true;
+
+      // Scale random with card bias
+      const scales = $$('input[name="scale"]');
+      const scaleBias = Math.random() < 0.6 ? "sparse" : randomPick(["large","normal","dense"]);
+      scales.forEach(s => s.checked = (s.value === scaleBias));
+
+      // Mood: pick 2
+      $$("input.mood").forEach(i => i.checked = false);
+      const moodInputs = $$("input.mood");
+      const m1 = randomPick(moodInputs); m1.checked = true;
+      let m2 = randomPick(moodInputs); while (m2 === m1) m2 = randomPick(moodInputs);
+      m2.checked = true;
+
+      // Botanical: pick 2-4
+      $$("input.botanical").forEach(i => i.checked = false);
+      const bInputs = $$("input.botanical");
+      const nB = Math.floor(Math.random()*3)+2; // 2..4
+      const shuffledB = bInputs.slice().sort(()=>Math.random()-0.5);
+      shuffledB.slice(0,nB).forEach(i => i.checked = true);
+
+      // Quality: keep all on
+      $$("input.quality").forEach(i => i.checked = true);
+
+      // Advanced: random toggles (keep seamless on)
+      $("#optSeamless").checked = true;
+      $("#optCardSpace").checked = Math.random() < 0.55;
+      $("#optLessTexture").checked = Math.random() < 0.40;
+      $("#optExtraContrast").checked = Math.random() < 0.35;
+
+      // Apply variant logic
+      const v = getRadio("variant").value;
+      setAnimalEnabled(v === "animal_adult" || v === "animal_pop");
+      if (v === "animal_adult" || v === "animal_pop"){
+        // pick 1-3 animals
+        $$("input.animals").forEach(i => i.checked = false);
+        const aInputs = $$("input.animals");
+        const nA = Math.floor(Math.random()*3)+1; // 1..3
+        const shuffledA = aInputs.slice().sort(()=>Math.random()-0.5);
+        shuffledA.slice(0,nA).forEach(i => i.checked = true);
+      }
+      applyVariantSmartDefaults(v);
+
+      build();
+      setStatus("Random", "ランダム生成しました");
+    }
+
+    // ===================== Init =====================
+    window.addEventListener("DOMContentLoaded", () => {
+      $("#baseEn").value = BASE_EN;
+      $("#negative").value = NEGATIVE;
+
+      // Animal group default disabled (unless animal variant)
+      setAnimalEnabled(false);
+
+      // Auto-build when changes (if output exists)
+      $$("input, select").forEach(el => el.addEventListener("change", () => {
+        const v = getRadio("variant").value;
+        const isAnimal = (v === "animal_adult" || v === "animal_pop");
+        setAnimalEnabled(isAnimal);
+        if (isAnimal) ensureAnimalDefaults();
+        if ($("#outEn").value.trim()) build();
+      }));
+
+      // Variant change: apply smart defaults
+      $$('input[name="variant"]').forEach(el => el.addEventListener("change", () => {
+        const v = getRadio("variant").value;
+        const isAnimal = (v === "animal_adult" || v === "animal_pop");
+        setAnimalEnabled(isAnimal);
+        applyVariantSmartDefaults(v);
+        build();
+      }));
+
+      $("#btnBuild").addEventListener("click", build);
+
+      $("#btnCopyEn").addEventListener("click", async () => {
+        const ok = await copyToClipboard($("#outEn").value.trim());
+        setStatus(ok ? "Copied" : "Copy failed", "英語をコピー");
+      });
+
+      $("#btnCopyJp").addEventListener("click", async () => {
+        const ok = await copyToClipboard($("#outJp").value.trim());
+        setStatus(ok ? "Copied" : "Copy failed", "日本語をコピー");
+      });
+
+      $("#btnRandom").addEventListener("click", randomize);
+
+      $("#btnReset").addEventListener("click", () => {
+        // Defaults
+        $$('input[name="variant"]').forEach((el,i)=> el.checked = (i===0));
+        $$('input[name="usage"]').forEach((el,i)=> el.checked = (i===0)); // card
+        $$('input[name="color"]').forEach((el,i)=> el.checked = (i===0)); // muted earthy
+        $$('input[name="scale"]').forEach((el,i)=> el.checked = (i===0)); // normal
+
+        // moods first 2
+        $$("input.mood").forEach(el => el.checked = false);
+        $$("input.mood").slice(0,2).forEach(el => el.checked = true);
+
+        // botanicals first 3
+        $$("input.botanical").forEach(el => el.checked = false);
+        $$("input.botanical").slice(0,3).forEach(el => el.checked = true);
+
+        // animals off
+        $$("input.animals").forEach(el => el.checked = false);
+
+        // quality all on
+        $$("input.quality").forEach(el => el.checked = true);
+
+        // advanced defaults
+        $("#optSeamless").checked = true;
+        $("#optCardSpace").checked = false;
+        $("#optLessTexture").checked = false;
+        $("#optExtraContrast").checked = false;
+
+        $("#lineBreakMode").value = "paragraph";
+
+        setAnimalEnabled(false);
+
+        $("#outEn").value = "";
+        $("#outJp").value = "";
+        build();
+        setStatus("Ready", "リセットしました");
+      });
+
+      // First build
+      build();
+    });
+  </script>
+</body>
+</html>
