@@ -4,12 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>和風パターン生成｜LOGO/TEXT対応 完全版</title>
-<meta name="description" content="和柄＋日本モチーフのシームレス和風パターン生成。名刺・カード向けLOGO/TEXT余白対応、単色/2色/複数色、紙質感、プリセット付き。" />
+<meta name="description" content="和柄＋日本モチーフのシームレス和風パターン生成。名刺・カード向けLOGO/TEXT余白対応、単色/2色/複数色、紙質感、プリセット、コピー機能付き。" />
 
 <style>
 :root{
   --bg:#0b0f14; --card:#101722; --muted:#8a95ad; --text:#e9eefc;
   --line:rgba(255,255,255,.10); --accent:#7dd3fc; --accent2:#fbbf24;
+  --good:#34d399; --warn:#fbbf24; --bad:#fb7185;
 }
 *{box-sizing:border-box}
 body{
@@ -29,7 +30,7 @@ h1{margin:0 0 6px;font-size:18px;font-weight:850}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:720px){.grid{grid-template-columns:1fr}}
 .group{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(0,0,0,.14)}
-.group h3{margin:0 0 8px;font-size:13px;color:var(--accent);display:flex;justify-content:space-between}
+.group h3{margin:0 0 8px;font-size:13px;color:var(--accent);display:flex;justify-content:space-between;gap:10px;align-items:center}
 .hint{font-size:11px;color:var(--muted);font-weight:700}
 label{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:10px;cursor:pointer}
 label:hover{background:rgba(255,255,255,.04)}
@@ -37,19 +38,27 @@ input{accent-color:var(--accent)}
 .jp{font-size:12px;color:var(--muted);margin-top:2px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .btn{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);padding:9px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:750}
+.btn:hover{border-color: rgba(125,211,252,.40);}
 .btn.primary{background:linear-gradient(135deg,rgba(125,211,252,.22),rgba(251,191,36,.14));border-color:rgba(125,211,252,.35)}
-textarea{width:100%;min-height:170px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);padding:10px 12px;font-size:12px}
-.select{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);padding:9px 10px;font-size:12px}
+.btn.small{padding:7px 10px;font-size:12px}
+textarea{width:100%;min-height:170px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);padding:10px 12px;font-size:12px;outline:none}
+textarea:focus{border-color: rgba(125,211,252,.45);}
+.select{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--text);padding:9px 10px;font-size:12px;outline:none}
+.select:focus{border-color: rgba(125,211,252,.45);}
 .divider{height:1px;background:var(--line);margin:10px 0}
 .pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.14);font-size:12px;color:var(--muted)}
 .pill strong{color:var(--text)}
+.pill.good{border-color: rgba(52,211,153,.35); background: rgba(52,211,153,.10); color: rgba(233,238,252,.92);}
+.pill.warn{border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.10); color: rgba(233,238,252,.92);}
+.pill.bad{border-color: rgba(251,113,133,.35); background: rgba(251,113,133,.10); color: rgba(233,238,252,.92);}
+small{color:var(--muted)}
 </style>
 </head>
 
 <body>
 <header>
   <h1>和風パターン生成｜LOGO/TEXT対応 完全版</h1>
-  <p class="sub">和柄＋日本モチーフの“パターン専用”。文字は描かず、置ける余白だけを指定。</p>
+  <p class="sub">和柄＋日本モチーフの“パターン専用”。文字は描かず、置ける余白だけを指定（名刺・カード・包装紙に強い）。</p>
 </header>
 
 <main class="wrap">
@@ -60,29 +69,59 @@ textarea{width:100%;min-height:170px;border-radius:14px;border:1px solid var(--l
     <!-- STYLE -->
     <div class="group">
       <h3>STYLE<span class="hint">1つ</span></h3>
-      <label><input type="radio" name="style" value="Japanese traditional wagara seamless pattern illustration. Inspired by ukiyo-e woodblock print aesthetics." data-jp="浮世絵インスパイア" checked>
-        <div><div>Ukiyo-e inspired</div><div class="jp">浮世絵インスパイア</div></div>
+      <label><input type="radio" name="style"
+        value="Japanese traditional wagara seamless pattern illustration. Inspired by ukiyo-e woodblock print aesthetics."
+        data-jp="浮世絵インスパイア" checked>
+        <div><div>Ukiyo-e inspired</div><div class="jp">浮世絵インスパイア（木版画）</div></div>
       </label>
-      <label><input type="radio" name="style" value="Japanese traditional wagara seamless pattern illustration. Showa-era nostalgic retro print aesthetics." data-jp="昭和ノスタルジック">
-        <div><div>Showa nostalgic</div><div class="jp">昭和ノスタルジック</div></div>
+
+      <label><input type="radio" name="style"
+        value="Japanese traditional wagara seamless pattern illustration. Showa-era nostalgic retro print aesthetics."
+        data-jp="昭和ノスタルジック">
+        <div><div>Showa nostalgic</div><div class="jp">昭和ノスタルジック（レトロ印刷）</div></div>
       </label>
+
+      <label><input type="radio" name="style"
+        value="Traditional Japanese painting inspired illustration with minimal ink feel and refined negative space."
+        data-jp="日本画ミニマル（水墨・余白）">
+        <div><div>Nihonga minimal</div><div class="jp">日本画ミニマル（水墨・余白）</div></div>
+      </label>
+
+      <label><input type="radio" name="style"
+        value="Japanese avant-garde inspired pattern illustration with bold dots, repetition, and graphic rhythm."
+        data-jp="前衛（反復・水玉）">
+        <div><div>Avant-garde repetition</div><div class="jp">前衛（反復・水玉）</div></div>
+      </label>
+
+      <small>※ “inspired” 表現で公開・販売向け</small>
     </div>
 
     <!-- WAGARA -->
     <div class="group">
-      <h3>WAGARA<span class="hint">複数OK</span></h3>
+      <h3>WAGARA<span class="hint">複数OK（1つ以上）</span></h3>
       <label><input type="checkbox" class="wagara" value="asanoha pattern" data-jp="麻の葉" checked><div><div>Asanoha</div><div class="jp">麻の葉</div></div></label>
       <label><input type="checkbox" class="wagara" value="seigaiha wave pattern" data-jp="青海波" checked><div><div>Seigaiha</div><div class="jp">青海波</div></div></label>
       <label><input type="checkbox" class="wagara" value="shippo interlocking circles pattern" data-jp="七宝"><div><div>Shippo</div><div class="jp">七宝</div></div></label>
+      <label><input type="checkbox" class="wagara" value="ichimatsu checkerboard pattern" data-jp="市松"><div><div>Ichimatsu</div><div class="jp">市松</div></div></label>
+      <label><input type="checkbox" class="wagara" value="kikkou tortoise shell pattern" data-jp="亀甲"><div><div>Kikkou</div><div class="jp">亀甲</div></div></label>
+      <label><input type="checkbox" class="wagara" value="uroko triangle pattern" data-jp="鱗"><div><div>Uroko</div><div class="jp">鱗</div></div></label>
+      <label><input type="checkbox" class="wagara" value="tatewaku flowing lines pattern" data-jp="立涌"><div><div>Tatewaku</div><div class="jp">立涌</div></div></label>
+      <label><input type="checkbox" class="wagara" value="karakusa arabesque vine pattern" data-jp="唐草"><div><div>Karakusa</div><div class="jp">唐草</div></div></label>
+      <div class="row"><span class="pill warn"><strong>Tip</strong> 上品にするなら和柄は1〜2個</span></div>
     </div>
 
     <!-- SYMBOL -->
     <div class="group">
-      <h3>SYMBOL MOTIFS<span class="hint">任意</span></h3>
+      <h3>SYMBOL MOTIFS<span class="hint">任意（パターンとして）</span></h3>
       <label><input type="checkbox" class="motif" value="stylized maneki-neko motifs" data-jp="招き猫"><div><div>Maneki-neko</div><div class="jp">招き猫</div></div></label>
       <label><input type="checkbox" class="motif" value="daruma doll motifs" data-jp="だるま"><div><div>Daruma</div><div class="jp">だるま</div></div></label>
       <label><input type="checkbox" class="motif" value="koi fish motifs" data-jp="鯉"><div><div>Koi</div><div class="jp">鯉</div></div></label>
       <label><input type="checkbox" class="motif" value="sakura cherry blossom motifs" data-jp="桜"><div><div>Sakura</div><div class="jp">桜</div></div></label>
+      <label><input type="checkbox" class="motif" value="mount fuji icon motifs" data-jp="富士山"><div><div>Mount Fuji</div><div class="jp">富士山</div></div></label>
+      <label><input type="checkbox" class="motif" value="torii gate icon motifs" data-jp="鳥居"><div><div>Torii</div><div class="jp">鳥居</div></div></label>
+      <label><input type="checkbox" class="motif" value="folding fan motifs" data-jp="扇"><div><div>Folding fan</div><div class="jp">扇</div></div></label>
+      <label><input type="checkbox" class="motif" value="gourd (hyotan) motifs" data-jp="瓢箪"><div><div>Hyotan</div><div class="jp">瓢箪</div></div></label>
+      <div class="row"><span class="pill"><strong>Rule</strong> “icon-like / non-character”でキャラ化防止</span></div>
     </div>
 
     <!-- COLOR -->
@@ -91,23 +130,53 @@ textarea{width:100%;min-height:170px;border-radius:14px;border:1px solid var(--l
       <label><input type="radio" name="color" value="monochrome, single-color ink" data-jp="単色" checked><div><div>Monochrome</div><div class="jp">単色</div></div></label>
       <label><input type="radio" name="color" value="two-tone limited palette" data-jp="2色"><div><div>Two-tone</div><div class="jp">2色</div></div></label>
       <label><input type="radio" name="color" value="multi-color palette with 3 to 5 harmonious colors" data-jp="複数色"><div><div>Multi-color</div><div class="jp">複数色</div></div></label>
-      <select class="select" id="palette">
-        <option value="classic indigo on off-white" data-jp="藍×生成り">藍×生成り</option>
-        <option value="vermilion red and warm beige" data-jp="朱×ベージュ">朱×ベージュ</option>
-        <option value="black ink on white paper" data-jp="黒×白">黒×白</option>
-      </select>
+
+      <select class="select" id="palette"></select>
+      <div class="jp" id="paletteJp"></div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- LOGO / TEXT -->
-  <div class="group">
-    <h3>LOGO / TEXT 対応<span class="hint">余白のみ</span></h3>
-    <label><input type="checkbox" id="logoSpace"><div><div>Logo-friendly layout</div><div class="jp">ロゴ配置を想定</div></div></label>
-    <label><input type="checkbox" id="textSpace"><div><div>Text-friendly negative space</div><div class="jp">文字用の余白</div></div></label>
-    <label><input type="checkbox" id="centerSpace"><div><div>Clear central space</div><div class="jp">中央に余白</div></div></label>
-    <div class="row"><span class="pill"><strong>Note</strong> 文字は描かず「置ける空間」だけを指定</span></div>
+  <div class="grid">
+    <!-- TEXTURE -->
+    <div class="group">
+      <h3>TEXTURE<span class="hint">任意</span></h3>
+      <label><input type="radio" name="texture" value="no paper texture, very clean print look" data-jp="質感なし（クリーン）">
+        <div><div>None (clean)</div><div class="jp">質感なし（クリーン）</div></div>
+      </label>
+      <label><input type="radio" name="texture" value="subtle paper texture, matte finish, very soft grain" data-jp="紙質感（控えめ）" checked>
+        <div><div>Subtle paper</div><div class="jp">紙質感（控えめ）</div></div>
+      </label>
+      <label><input type="radio" name="texture" value="subtle washi-like paper texture, matte finish, extremely soft grain" data-jp="和紙っぽい（上品）">
+        <div><div>Washi-like</div><div class="jp">和紙っぽい（上品）</div></div>
+      </label>
+      <label><input type="radio" name="texture" value="light vintage print grain, slightly faded ink feel (very subtle)" data-jp="レトロ印刷（薄め）">
+        <div><div>Retro print (light)</div><div class="jp">レトロ印刷（薄め）</div></div>
+      </label>
+      <div class="row"><span class="pill warn"><strong>Tip</strong> ザラザラを避けたい時は「Subtle」推奨</span></div>
+    </div>
+
+    <!-- LOGO / TEXT -->
+    <div class="group">
+      <h3>LOGO / TEXT 余白<span class="hint">描かずに余白だけ</span></h3>
+      <label><input type="checkbox" id="logoSpace"><div><div>Logo-friendly layout</div><div class="jp">ロゴ配置を想定</div></div></label>
+      <label><input type="checkbox" id="textSpace"><div><div>Text-friendly negative space</div><div class="jp">文字用の余白</div></div></label>
+
+      <div class="divider"></div>
+
+      <select class="select" id="spacePos">
+        <option value="Clear central negative space reserved for logo or text placement." data-jp="中央に余白" selected>中央に余白</option>
+        <option value="Clear top area negative space reserved for logo or header text." data-jp="上部に余白">上部に余白</option>
+        <option value="Clear bottom area negative space reserved for footer text." data-jp="下部に余白">下部に余白</option>
+        <option value="Clear left-side negative space reserved for branding." data-jp="左に余白">左に余白</option>
+        <option value="Clear right-side negative space reserved for branding." data-jp="右に余白">右に余白</option>
+        <option value="No specific reserved area; keep general breathing space." data-jp="位置指定なし（全体余白）">位置指定なし（全体余白）</option>
+      </select>
+      <div class="jp" id="spacePosJp">中央に余白</div>
+
+      <div class="row"><span class="pill"><strong>Note</strong> 文字は描かず“置ける空間”だけ</span></div>
+    </div>
   </div>
 
   <div class="divider"></div>
@@ -116,75 +185,314 @@ textarea{width:100%;min-height:170px;border-radius:14px;border:1px solid var(--l
   <div class="group">
     <h3>PRESETS<span class="hint">ワンクリック</span></h3>
     <div class="row">
-      <button class="btn" id="presetBusiness">名刺用</button>
-      <button class="btn" id="presetCard">カード用</button>
+      <button class="btn small" id="presetBusiness">名刺用</button>
+      <button class="btn small" id="presetCard">カード用</button>
+      <button class="btn small" id="presetWrap">包装紙用</button>
+      <button class="btn small" id="presetNihonga">日本画ミニマル</button>
+      <button class="btn small" id="presetShowaPop">昭和ポップ</button>
       <button class="btn primary" id="build">生成</button>
+      <span class="pill" id="status"><strong>Ready</strong> 選んで生成</span>
     </div>
   </div>
 </section>
 
 <aside class="card">
   <h2>出力</h2>
-  <textarea id="outEn" placeholder="English Prompt"></textarea>
+
+  <div class="group">
+    <h3>English Prompt<span class="hint">生成用</span></h3>
+    <textarea id="outEn" placeholder="English Prompt"></textarea>
+    <div class="row">
+      <button class="btn small" id="copyEn">ENコピー</button>
+      <button class="btn small" id="copyNeg">NEGコピー</button>
+    </div>
+  </div>
+
   <div class="divider"></div>
-  <textarea id="outJp" placeholder="日本語確認文"></textarea>
+
+  <div class="group">
+    <h3>日本語確認文<span class="hint">チェック用</span></h3>
+    <textarea id="outJp" placeholder="日本語確認文"></textarea>
+    <div class="row">
+      <button class="btn small" id="copyJp">JPコピー</button>
+      <button class="btn small" id="reset">リセット</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="group">
+    <h3>NEGATIVE（固定）<span class="hint">失敗防止</span></h3>
+    <textarea id="negative" readonly></textarea>
+  </div>
 </aside>
 </main>
 
 <script>
 const $=s=>document.querySelector(s);
 const $$=s=>Array.from(document.querySelectorAll(s));
-const NEG="--no photorealistic, 3d, glossy, heavy shadows, strong gradients, text, logo";
 
-function join(a){return a.length>1?a.slice(0,-1).join(", ")+" and "+a.at(-1):a[0]||""}
+const NEG = "--no photorealistic, 3d, glossy, heavy shadows, strong gradients, text, logo, illustration scene, characters, mascot, noisy grain, rough paper fibers";
 
-function build(){
-  const style=$('input[name="style"]:checked').value;
-  const wagara=$$('.wagara:checked').map(i=>i.value);
-  const motif=$$('.motif:checked').map(i=>i.value);
-  const color=$('input[name="color"]:checked').value;
-  const palette=$("#palette").value;
+const palettes = {
+  mono: [
+    {en:"deep indigo on warm off-white paper", jp:"藍×生成り（単色）"},
+    {en:"deep sumi black on soft white paper", jp:"墨黒×白（単色）"},
+    {en:"soft charcoal on kinari natural paper", jp:"炭×生成り（単色）"}
+  ],
+  two: [
+    {en:"indigo and warm off-white", jp:"藍×生成り（2色）"},
+    {en:"vermilion red and warm beige", jp:"朱×ベージュ（2色）"},
+    {en:"black and cream", jp:"黒×クリーム（2色）"}
+  ],
+  multi: [
+    {en:"classic indigo, muted red, warm beige, and soft cream", jp:"藍×くすみ赤×ベージュ×生成り"},
+    {en:"sage green, mustard yellow, cream, and charcoal", jp:"セージ×マスタード×クリーム×炭"},
+    {en:"navy, brick red, sand beige, and off-white", jp:"ネイビー×レンガ×砂×生成り"}
+  ]
+};
 
-  const logo=$("#logoSpace").checked;
-  const text=$("#textSpace").checked;
-  const center=$("#centerSpace").checked;
-
-  let p=[];
-  p.push(style);
-  p.push("Flat vector style, clean shapes, balanced composition.");
-  p.push(`Pattern-only composition featuring ${join(wagara)}${motif.length? " with "+join(motif):""}.`);
-  p.push(`Color style: ${color}. Palette: ${palette}.`);
-  p.push("Seamless repeating pattern, consistent spacing, seamless tiling.");
-  p.push("Subtle paper texture, matte finish, very soft grain.");
-
-  if(logo) p.push("Logo-friendly layout with clear visual hierarchy.");
-  if(text) p.push("Text-friendly negative space suitable for typography overlay.");
-  if(center) p.push("Clear central negative space reserved for logo or text placement.");
-
-  if(!logo && !text) p.push("No text, no logo.");
-  p.push(NEG);
-
-  $("#outEn").value=p.join("\n");
-  $("#outJp").value=`STYLE：${$('input[name="style"]:checked').dataset.jp}
-WAGARA：${wagara.join(" / ")}
-MOTIF：${motif.map(m=>m).join(" / ")||"なし"}
-COLOR：${$('input[name="color"]:checked').dataset.jp}
-LOGO余白：${logo?"ON":"OFF"} / TEXT余白：${text?"ON":"OFF"} / 中央余白：${center?"ON":"OFF"}`;
+function setStatus(kind, msg){
+  const el = $("#status");
+  el.className = "pill " + (kind||"");
+  el.innerHTML = `<strong>${kind ? kind.toUpperCase() : "Ready"}</strong> ${msg||""}`;
+}
+function join(a){
+  const x = a.filter(Boolean);
+  if(!x.length) return "";
+  if(x.length===1) return x[0];
+  if(x.length===2) return `${x[0]} and ${x[1]}`;
+  return `${x.slice(0,-1).join(", ")}, and ${x.at(-1)}`;
 }
 
-// Presets
-$("#presetBusiness").onclick=()=>{
-  $("#logoSpace").checked=true; $("#textSpace").checked=true; $("#centerSpace").checked=true;
-  $$('input.motif').forEach(i=>i.checked=false);
-  build();
-};
-$("#presetCard").onclick=()=>{
-  $("#logoSpace").checked=false; $("#textSpace").checked=false; $("#centerSpace").checked=false;
-  build();
-};
+function syncPalette(){
+  const color = $('input[name="color"]:checked').value;
+  const key = color.includes("single-color") ? "mono" : color.includes("two-tone") ? "two" : "multi";
+  const sel = $("#palette");
+  sel.innerHTML = "";
+  palettes[key].forEach((p, idx)=>{
+    const opt = document.createElement("option");
+    opt.value = p.en;
+    opt.dataset.jp = p.jp;
+    opt.textContent = p.jp;
+    if(idx===0) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  $("#paletteJp").textContent = $("#palette option:checked")?.dataset.jp || "";
+}
 
-$("#build").onclick=build;
-build();
+function syncSpacePos(){
+  $("#spacePosJp").textContent = $("#spacePos option:checked")?.dataset.jp || "";
+}
+
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }
+  catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    const ok=document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+function build(){
+  const styleEl = $('input[name="style"]:checked');
+  const style = styleEl.value;
+
+  const wagara = $$('.wagara:checked').map(i=>i.value);
+  const wagaraJp = $$('.wagara:checked').map(i=>i.dataset.jp);
+
+  if(!wagara.length){
+    setStatus("bad","和柄を1つ以上選んでください");
+    return;
+  }
+
+  const motif = $$('.motif:checked').map(i=>i.value);
+  const motifJp = $$('.motif:checked').map(i=>i.dataset.jp);
+
+  const colorEl = $('input[name="color"]:checked');
+  const color = colorEl.value;
+
+  const palette = $("#palette").value;
+  const paletteJp = $("#palette option:checked")?.dataset.jp || "";
+
+  const textureEl = $('input[name="texture"]:checked');
+  const texture = textureEl.value;
+
+  const logo = $("#logoSpace").checked;
+  const text = $("#textSpace").checked;
+  const spaceSentence = $("#spacePos").value;
+  const spaceJp = $("#spacePos option:checked")?.dataset.jp || "";
+
+  const parts = [];
+  parts.push(style);
+  parts.push("Flat vector style, clean shapes, balanced composition.");
+  parts.push("Pattern-only composition, no scenery, no characters, purely decorative motifs.");
+
+  const motifClause = motif.length
+    ? ` with ${join(motif)} (stylized, icon-like, non-character).`
+    : ".";
+  parts.push(`Featuring ${join(wagara)}${motifClause}`);
+
+  parts.push("Clear repeating motifs, crisp geometry, calm rhythm.");
+  parts.push(`Color style: ${color}.`);
+  parts.push(`Palette suggestion: ${palette}.`);
+  parts.push("Seamless repeating pattern, consistent spacing, seamless tiling.");
+  parts.push(texture + ".");
+
+  if (logo) parts.push("Logo-friendly layout with clear visual hierarchy.");
+  if (text) parts.push("Text-friendly negative space suitable for typography overlay.");
+  if (logo || text) parts.push(spaceSentence);
+
+  if(!logo && !text) parts.push("No text, no logo.");
+  parts.push("");
+  parts.push(NEG);
+
+  $("#outEn").value = parts.join("\n");
+
+  $("#outJp").value =
+`STYLE：${styleEl.dataset.jp}
+WAGARA：${wagaraJp.join(" / ")}
+MOTIF：${motifJp.join(" / ") || "なし"}
+COLOR：${colorEl.dataset.jp}
+PALETTE：${paletteJp}
+TEXTURE：${textureEl.dataset.jp}
+LOGO余白：${logo ? "ON" : "OFF"} / TEXT余白：${text ? "ON" : "OFF"}
+余白位置：${(logo||text) ? spaceJp : "なし"}`;
+
+  setStatus("good","生成しました");
+}
+
+function resetAll(){
+  // style default
+  $('input[name="style"]').checked = true;
+
+  // wagara default: first two checked, others off
+  $$('.wagara').forEach(i=>i.checked=false);
+  $$('.wagara').slice(0,2).forEach(i=>i.checked=true);
+
+  // motif off
+  $$('.motif').forEach(i=>i.checked=false);
+
+  // color mono
+  $('input[name="color"][value="monochrome, single-color ink"]').checked = true;
+  syncPalette();
+
+  // texture subtle paper
+  $('input[name="texture"][data-jp="紙質感（控えめ）"]').checked = true;
+
+  // logo/text off
+  $("#logoSpace").checked=false; $("#textSpace").checked=false;
+  $("#spacePos").selectedIndex = 0;
+  syncSpacePos();
+
+  $("#outEn").value="";
+  $("#outJp").value="";
+  setStatus("", "リセットしました");
+  build();
+}
+
+// PRESETS
+function presetBusiness(){
+  resetAll();
+  $("#logoSpace").checked = true;
+  $("#textSpace").checked = true;
+  $("#spacePos").value = "Clear central negative space reserved for logo or text placement.";
+  syncSpacePos();
+  // 上品：和柄は2つ、モチーフなし
+  $$('.motif').forEach(i=>i.checked=false);
+  build();
+}
+function presetCard(){
+  resetAll();
+  $("#logoSpace").checked = false;
+  $("#textSpace").checked = false;
+  // 全面柄：モチーフ少し足す場合は任意
+  build();
+}
+function presetWrap(){
+  resetAll();
+  // 包装紙：全面柄、複数色
+  $('input[name="color"][value="multi-color palette with 3 to 5 harmonious colors"]').checked = true;
+  syncPalette();
+  $("#logoSpace").checked = false;
+  $("#textSpace").checked = false;
+  // モチーフ少し
+  const maneki = $$('.motif').find(i=>i.dataset.jp==="招き猫");
+  if(maneki) maneki.checked = true;
+  build();
+}
+function presetNihonga(){
+  resetAll();
+  $('input[name="style"][data-jp="日本画ミニマル（水墨・余白）"]').checked = true;
+  $('input[name="color"][value="monochrome, single-color ink"]').checked = true;
+  syncPalette();
+  $('input[name="texture"][data-jp="和紙っぽい（上品）"]').checked = true;
+  // 和柄3つ
+  $$('.wagara').forEach(i=>i.checked=false);
+  ["麻の葉","青海波","七宝"].forEach(jp=>{
+    const el = $$('.wagara').find(i=>i.dataset.jp===jp);
+    if(el) el.checked=true;
+  });
+  build();
+}
+function presetShowaPop(){
+  resetAll();
+  $('input[name="style"][data-jp="昭和ノスタルジック"]').checked = true;
+  $('input[name="color"][value="multi-color palette with 3 to 5 harmonious colors"]').checked = true;
+  syncPalette();
+  $("#palette").value = "classic indigo, muted red, warm beige, and soft cream";
+  $("#paletteJp").textContent = "藍×くすみ赤×ベージュ×生成り";
+  $('input[name="texture"][data-jp="レトロ印刷（薄め）"]').checked = true;
+  // 招き猫ON
+  const maneki = $$('.motif').find(i=>i.dataset.jp==="招き猫");
+  if(maneki) maneki.checked = true;
+  build();
+}
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  $("#negative").value = NEG;
+
+  // listeners
+  $$('input[name="color"]').forEach(r=>r.addEventListener("change", ()=>{syncPalette(); build();}));
+  $("#palette").addEventListener("change", ()=>{$("#paletteJp").textContent = $("#palette option:checked")?.dataset.jp || ""; build();});
+  $("#spacePos").addEventListener("change", ()=>{syncSpacePos(); build();});
+
+  $$('input[name="style"]').forEach(r=>r.addEventListener("change", build));
+  $$('.wagara, .motif').forEach(c=>c.addEventListener("change", build));
+  $$('input[name="texture"]').forEach(r=>r.addEventListener("change", build));
+  $("#logoSpace").addEventListener("change", build);
+  $("#textSpace").addEventListener("change", build);
+
+  $("#build").addEventListener("click", build);
+  $("#reset").addEventListener("click", resetAll);
+
+  $("#presetBusiness").addEventListener("click", presetBusiness);
+  $("#presetCard").addEventListener("click", presetCard);
+  $("#presetWrap").addEventListener("click", presetWrap);
+  $("#presetNihonga").addEventListener("click", presetNihonga);
+  $("#presetShowaPop").addEventListener("click", presetShowaPop);
+
+  $("#copyEn").addEventListener("click", async ()=>{
+    const ok = await copyText($("#outEn").value.trim());
+    setStatus(ok?"good":"bad", ok?"ENコピーしました":"コピー失敗");
+  });
+  $("#copyJp").addEventListener("click", async ()=>{
+    const ok = await copyText($("#outJp").value.trim());
+    setStatus(ok?"good":"bad", ok?"JPコピーしました":"コピー失敗");
+  });
+  $("#copyNeg").addEventListener("click", async ()=>{
+    const ok = await copyText(NEG);
+    setStatus(ok?"good":"bad", ok?"NEGコピーしました":"コピー失敗");
+  });
+
+  // init
+  $('input[name="color"][value="monochrome, single-color ink"]').checked = true;
+  syncPalette();
+  syncSpacePos();
+  build();
+});
 </script>
 </body>
 </html>
