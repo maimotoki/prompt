@@ -6,6 +6,7 @@
   <title>幻想アニメ風プロンプトメーカー</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
@@ -14,8 +15,10 @@
       min-height: 100vh;
       padding: 40px 20px;
     }
+
     .container { max-width: 1080px; margin: 0 auto; }
     .hero { text-align: center; margin-bottom: 32px; }
+
     .badge {
       display: inline-block;
       padding: 8px 16px;
@@ -27,12 +30,14 @@
       font-size: 14px;
       margin-bottom: 16px;
     }
+
     h1 {
       font-size: clamp(32px, 5vw, 56px);
       line-height: 1.2;
       margin: 0 0 16px;
       letter-spacing: 0.04em;
     }
+
     .lead {
       color: #eadfff;
       font-size: 16px;
@@ -40,6 +45,7 @@
       max-width: 760px;
       margin: 0 auto;
     }
+
     .panel {
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.2);
@@ -48,13 +54,22 @@
       box-shadow: 0 24px 80px rgba(0,0,0,0.28);
       backdrop-filter: blur(16px);
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
+
     .field { display: flex; flex-direction: column; gap: 8px; }
-    label { font-size: 14px; color: #f7eaff; font-weight: 700; }
+    .full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 14px;
+      color: #f7eaff;
+      font-weight: 700;
+    }
+
     select, input, textarea {
       width: 100%;
       border: 1px solid rgba(255,255,255,0.25);
@@ -65,17 +80,19 @@
       font-size: 15px;
       outline: none;
     }
+
     select:focus, input:focus, textarea:focus {
       border-color: #ffd6ff;
       box-shadow: 0 0 0 4px rgba(255,214,255,0.25);
     }
-    .full { grid-column: 1 / -1; }
+
     .buttons {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       margin-top: 24px;
     }
+
     button {
       border: none;
       border-radius: 999px;
@@ -85,32 +102,43 @@
       cursor: pointer;
       transition: 0.25s;
     }
-    .primary { background: linear-gradient(135deg, #ffd1fb, #b9a7ff); color: #2b2145; }
+
+    .primary {
+      background: linear-gradient(135deg, #ffd1fb, #b9a7ff);
+      color: #2b2145;
+    }
+
     .secondary {
       background: rgba(255,255,255,0.16);
       color: #fff;
       border: 1px solid rgba(255,255,255,0.28);
     }
+
     button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
     .result {
       margin-top: 28px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
+
     .result-box h2 { margin: 0 0 12px; font-size: 20px; }
+
     textarea.output {
-      min-height: 310px;
+      min-height: 360px;
       line-height: 1.8;
       resize: vertical;
       background: rgba(255,255,255,0.92);
     }
+
     .tips {
       margin-top: 24px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
+
     .tip {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.16);
@@ -120,6 +148,7 @@
       font-size: 14px;
       line-height: 1.7;
     }
+
     @media (max-width: 760px) {
       body { padding: 28px 14px; }
       .panel { padding: 20px; border-radius: 22px; }
@@ -132,7 +161,9 @@
     <section class="hero">
       <div class="badge">Dreamy Fantasy Prompt Maker</div>
       <h1>幻想アニメ風<br>プロンプトメーカー</h1>
-      <p class="lead">日本語で項目を選ぶだけで、日本語プロンプトと英語プロンプトを同時に生成できます。不要な項目は「なし」を選べます。</p>
+      <p class="lead">
+        日本語で項目を選ぶだけで、日本語プロンプトと英語プロンプトを同時に生成できます。人物・背景・色調・比率など、不要な項目は「なし」を選べます。
+      </p>
     </section>
 
     <section class="panel">
@@ -147,6 +178,8 @@
             <option value="traveler">ランタンを持った旅人</option>
             <option value="lovers">星空を見上げる恋人たち</option>
             <option value="childFlowers">花を抱えた子ども</option>
+            <option value="boy">銀髪の少年</option>
+            <option value="witch">小さな魔女</option>
           </select>
         </div>
 
@@ -161,6 +194,8 @@
             <option value="snowVillage">雪に包まれた山間の村</option>
             <option value="castleTown">幻想的な城下町</option>
             <option value="sunsetBeach">夕暮れの砂浜</option>
+            <option value="forest">光る森</option>
+            <option value="library">星明かりの図書館</option>
           </select>
         </div>
 
@@ -173,6 +208,8 @@
             <option value="crystalsBooks">光る水晶、古い本、星のオーナメント</option>
             <option value="paperLanterns">和紙の灯籠、桜、蛍</option>
             <option value="laceMoonFlowers">月の花、レースのカーテン、きらめく光の粒</option>
+            <option value="butterflies">光る蝶と小さな星屑</option>
+            <option value="magicBooks">魔法の本と浮遊する羽根ペン</option>
           </select>
         </div>
 
@@ -185,6 +222,7 @@
             <option value="aurora">オーロラが広がる夜空</option>
             <option value="goldenSunset">黄金色の夕焼け</option>
             <option value="snowStars">星空の下で静かに降る雪</option>
+            <option value="blueMorning">淡いブルーの朝焼け</option>
           </select>
         </div>
 
@@ -197,6 +235,7 @@
             <option value="romantic">ロマンチックで魔法のよう</option>
             <option value="mysterious">神秘的で夢のよう</option>
             <option value="warm">あたたかく心地よい</option>
+            <option value="dramatic">ドラマチックで映画的</option>
           </select>
         </div>
 
@@ -210,6 +249,59 @@
             <option value="greenGold">エメラルドグリーンとゴールド</option>
             <option value="sunsetOrange">夕焼けのようなオレンジ</option>
             <option value="whiteGold">やわらかな白とゴールド</option>
+            <option value="blueWhite">透明感のあるブルーとホワイト</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="ratio">画像比率</label>
+          <select id="ratio">
+            <option value="none">なし</option>
+            <option value="1:1">1:1（正方形）</option>
+            <option value="16:9" selected>16:9（横長）</option>
+            <option value="9:16">9:16（縦長）</option>
+            <option value="4:3">4:3</option>
+            <option value="3:4">3:4</option>
+            <option value="21:9">21:9（シネマ風）</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="artStyle">イラストタッチ</label>
+          <select id="artStyle">
+            <option value="none">なし</option>
+            <option value="anime" selected>幻想アニメ風</option>
+            <option value="watercolor">水彩風</option>
+            <option value="thickPaint">厚塗り風</option>
+            <option value="pictureBook">絵本風</option>
+            <option value="cyberpunk">サイバーパンク風</option>
+            <option value="gameArt">ソシャゲ風</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="camera">カメラ構図</label>
+          <select id="camera">
+            <option value="none">なし</option>
+            <option value="wideShot" selected>ワイドショット</option>
+            <option value="closeUp">クローズアップ</option>
+            <option value="cinematic">映画風アングル</option>
+            <option value="topView">俯瞰視点</option>
+            <option value="lowAngle">ローアングル</option>
+            <option value="symmetry">左右対称の構図</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="lighting">ライティング</label>
+          <select id="lighting">
+            <option value="none">なし</option>
+            <option value="moonLight" selected>月明かり</option>
+            <option value="softGlow">やわらかな発光</option>
+            <option value="rimLight">リムライト</option>
+            <option value="sunsetLight">夕焼けの光</option>
+            <option value="volumetric">ボリューメトリックライト</option>
+            <option value="backLight">逆光</option>
           </select>
         </div>
 
@@ -245,7 +337,7 @@
       <div class="tips">
         <div class="tip"><strong>幻想感UP：</strong><br>発光感、きらめく粒子、魔法のような空気感</div>
         <div class="tip"><strong>背景を豪華に：</strong><br>細密な背景、映画のような構図、奥行き</div>
-        <div class="tip"><strong>光を綺麗に：</strong><br>やわらかな光、月明かり、光の反射、空気感のある光</div>
+        <div class="tip"><strong>光を綺麗に：</strong><br>月明かり、逆光、空気感のある光、やわらかな反射</div>
       </div>
     </section>
   </main>
@@ -259,7 +351,9 @@
         kimonoWoman: { ja: '着物姿の女性', en: 'a young woman in kimono' },
         traveler: { ja: 'ランタンを持った旅人', en: 'a traveler holding a lantern' },
         lovers: { ja: '星空を見上げる恋人たち', en: 'two lovers watching the sky' },
-        childFlowers: { ja: '花を抱えた子ども', en: 'a child holding flowers' }
+        childFlowers: { ja: '花を抱えた子ども', en: 'a child holding flowers' },
+        boy: { ja: '銀髪の少年', en: 'a silver-haired boy' },
+        witch: { ja: '小さな魔女', en: 'a little witch' }
       },
       place: {
         none: { ja: '', en: '' },
@@ -269,7 +363,9 @@
         lavenderField: { ja: '一面に広がるラベンダー畑', en: 'a lavender flower field' },
         snowVillage: { ja: '雪に包まれた山間の村', en: 'a snowy mountain village' },
         castleTown: { ja: '幻想的な城下町', en: 'a fantasy castle town' },
-        sunsetBeach: { ja: '夕暮れの砂浜', en: 'a sunset beach' }
+        sunsetBeach: { ja: '夕暮れの砂浜', en: 'a sunset beach' },
+        forest: { ja: '淡く光る森', en: 'a softly glowing enchanted forest' },
+        library: { ja: '星明かりに包まれた図書館', en: 'a starlit magical library' }
       },
       items: {
         none: { ja: '', en: '' },
@@ -277,7 +373,9 @@
         petalsBottles: { ja: '舞い散る花びら、ガラス瓶、やわらかなキャンドルの灯り', en: 'floating petals, glass bottles, and soft candle lights' },
         crystalsBooks: { ja: '光る水晶、古い本、星のオーナメント', en: 'glowing crystals, vintage books, and star ornaments' },
         paperLanterns: { ja: '和紙の灯籠、桜、蛍', en: 'paper lanterns, cherry blossoms, and fireflies' },
-        laceMoonFlowers: { ja: '月の花、レースのカーテン、きらめく光の粒', en: 'moon flowers, lace curtains, and sparkling particles' }
+        laceMoonFlowers: { ja: '月の花、レースのカーテン、きらめく光の粒', en: 'moon flowers, lace curtains, and sparkling particles' },
+        butterflies: { ja: '光る蝶と小さな星屑', en: 'glowing butterflies and tiny stardust' },
+        magicBooks: { ja: '魔法の本と浮遊する羽根ペン', en: 'magic books and floating quill pens' }
       },
       sky: {
         none: { ja: '', en: '' },
@@ -285,7 +383,8 @@
         twilightStars: { ja: '夕暮れと流れ星が広がる空の下', en: 'during twilight with shooting stars' },
         aurora: { ja: 'オーロラが広がる夜空の下', en: 'under aurora lights' },
         goldenSunset: { ja: '黄金色の夕焼けの中', en: 'during golden sunset' },
-        snowStars: { ja: '星空の下で静かに雪が降る中', en: 'with gentle snowfall under the stars' }
+        snowStars: { ja: '星空の下で静かに雪が降る中', en: 'with gentle snowfall under the stars' },
+        blueMorning: { ja: '淡いブルーの朝焼けの中', en: 'during a pale blue sunrise' }
       },
       mood: {
         none: { ja: '', en: '' },
@@ -293,7 +392,8 @@
         nostalgic: { ja: '切なくノスタルジックな雰囲気', en: 'melancholic and nostalgic' },
         romantic: { ja: 'ロマンチックで魔法のような雰囲気', en: 'romantic and magical' },
         mysterious: { ja: '神秘的で夢のような雰囲気', en: 'mysterious and dreamy' },
-        warm: { ja: 'あたたかく心地よい雰囲気', en: 'warm and comforting' }
+        warm: { ja: 'あたたかく心地よい雰囲気', en: 'warm and comforting' },
+        dramatic: { ja: 'ドラマチックで映画的な雰囲気', en: 'dramatic and cinematic' }
       },
       color: {
         none: { ja: '', en: '' },
@@ -302,7 +402,35 @@
         navySilver: { ja: '深いネイビーとシルバーの色調', en: 'deep navy and silver tones' },
         greenGold: { ja: 'エメラルドグリーンとゴールドの色調', en: 'emerald green and gold tones' },
         sunsetOrange: { ja: '夕焼けのようなオレンジの色調', en: 'warm sunset orange tones' },
-        whiteGold: { ja: 'やわらかな白とゴールドの色調', en: 'soft white and gold tones' }
+        whiteGold: { ja: 'やわらかな白とゴールドの色調', en: 'soft white and gold tones' },
+        blueWhite: { ja: '透明感のあるブルーとホワイトの色調', en: 'clear blue and white tones' }
+      },
+      artStyle: {
+        none: { ja: '', en: '' },
+        anime: { ja: '幻想的な日本アニメ風', en: 'dreamy Japanese fantasy anime style' },
+        watercolor: { ja: '水彩画風', en: 'watercolor painting style' },
+        thickPaint: { ja: '厚塗りイラスト風', en: 'thick paint illustration style' },
+        pictureBook: { ja: 'やさしい絵本風', en: 'gentle picture book illustration style' },
+        cyberpunk: { ja: 'サイバーパンク風', en: 'cyberpunk anime style' },
+        gameArt: { ja: 'ソーシャルゲーム風', en: 'mobile game illustration style' }
+      },
+      camera: {
+        none: { ja: '', en: '' },
+        wideShot: { ja: 'ワイドショット', en: 'wide shot' },
+        closeUp: { ja: 'クローズアップ', en: 'close-up shot' },
+        cinematic: { ja: '映画風アングル', en: 'cinematic angle' },
+        topView: { ja: '俯瞰視点', en: 'top view' },
+        lowAngle: { ja: 'ローアングル', en: 'low angle shot' },
+        symmetry: { ja: '左右対称の構図', en: 'symmetrical composition' }
+      },
+      lighting: {
+        none: { ja: '', en: '' },
+        moonLight: { ja: '月明かり', en: 'moon light' },
+        softGlow: { ja: 'やわらかな発光', en: 'soft glowing light' },
+        rimLight: { ja: 'リムライト', en: 'rim light' },
+        sunsetLight: { ja: '夕焼けの光', en: 'golden sunset lighting' },
+        volumetric: { ja: 'ボリューメトリックライト', en: 'volumetric lighting' },
+        backLight: { ja: '逆光', en: 'backlighting' }
       }
     };
 
@@ -326,6 +454,10 @@
       const sky = getSelected('sky', 'sky');
       const mood = getSelected('mood', 'mood');
       const color = getSelected('color', 'color');
+      const artStyle = getSelected('artStyle', 'artStyle');
+      const camera = getSelected('camera', 'camera');
+      const lighting = getSelected('lighting', 'lighting');
+      const ratio = document.getElementById('ratio').value;
       const customJa = document.getElementById('customJa').value.trim();
       const customEn = document.getElementById('customEn').value.trim();
 
@@ -338,10 +470,24 @@
       ]);
 
       const moodJa = mood.ja ? '全体は' + mood.ja + 'で、' : '全体は';
-      const colorJa = color.ja ? '\n\n色調：' + color.ja + '。' : '';
       const addJa = customJa ? '\n\n追加要素：' + customJa + '。' : '';
+      const colorJa = color.ja ? '\n\n色調：' + color.ja + '。' : '';
+      const artStyleJa = artStyle.ja ? '\n画風：' + artStyle.ja + '。' : '';
+      const cameraJa = camera.ja ? '\n構図：' + camera.ja + '。' : '';
+      const lightingJa = lighting.ja ? '\nライティング：' + lighting.ja + '。' : '';
+      const ratioJa = ratio !== 'none' ? '\n画像比率：' + ratio + '。' : '';
 
-      const promptJa = introJa + '\n\n' + moodJa + '発光する光、きらめく粒子、映画のような構図、細密な背景、やわらかなライティング、魔法のような空気感、美しい反射、繊細な質感、奥行きのある光を表現する。' + addJa + colorJa + '\n\n高品質な日本の幻想アニメ風、透明感のある光、夢のような世界観、繊細な描き込み、超高精細、masterpiece、8k。\n\nネガティブプロンプト：低品質、ぼやけ、指の崩れ、人体の崩れ、顔の歪み、切れた構図、文字、透かし、不自然な手、彩度が強すぎる、低解像度。';
+      const promptJa = introJa +
+        '\n\n' + moodJa +
+        '発光する光、きらめく粒子、映画のような構図、細密な背景、やわらかなライティング、魔法のような空気感、美しい反射、繊細な質感、奥行きのある光を表現する。' +
+        addJa +
+        colorJa +
+        artStyleJa +
+        cameraJa +
+        lightingJa +
+        ratioJa +
+        '\n\n高品質な日本の幻想アニメ風、透明感のある光、夢のような世界観、繊細な描き込み、超高精細、masterpiece、8k。' +
+        '\n\nネガティブプロンプト：低品質、ぼやけ、指の崩れ、人体の崩れ、顔の歪み、切れた構図、文字、透かし、不自然な手、彩度が強すぎる、低解像度。';
 
       const introEn = joinEn([
         'A dreamy fantasy anime illustration',
@@ -353,10 +499,24 @@
       ]);
 
       const moodEn = mood.en ? 'The atmosphere is ' + mood.en + ', with ' : 'With ';
-      const colorEn = color.en ? '\n\nColor palette: ' + color.en + '.' : '';
       const addEn = customEn ? '\n\nAdditional elements: ' + customEn + '.' : '';
+      const colorEn = color.en ? '\n\nColor palette: ' + color.en + '.' : '';
+      const artStyleEn = artStyle.en ? '\nArt style: ' + artStyle.en + '.' : '';
+      const cameraEn = camera.en ? '\nCamera angle: ' + camera.en + '.' : '';
+      const lightingEn = lighting.en ? '\nLighting: ' + lighting.en + '.' : '';
+      const ratioEn = ratio !== 'none' ? '\nAspect ratio: ' + ratio + '.' : '';
 
-      const promptEn = introEn + '\n\n' + moodEn + 'glowing lights, sparkling particles, cinematic composition, ultra detailed background, soft lighting, magical ambiance, beautiful reflections, delicate textures, and volumetric light.' + addEn + colorEn + '\n\nStyle inspired by highly detailed Japanese fantasy anime art, ethereal lighting, dreamy atmosphere, delicate textures, masterpiece, ultra detailed, 8k.\n\nNegative prompt: low quality, blurry, extra fingers, bad anatomy, distorted face, cropped, text, watermark, poorly drawn hands, oversaturated, low detail.';
+      const promptEn = introEn +
+        '\n\n' + moodEn +
+        'glowing lights, sparkling particles, cinematic composition, ultra detailed background, soft lighting, magical ambiance, beautiful reflections, delicate textures, and volumetric light.' +
+        addEn +
+        colorEn +
+        artStyleEn +
+        cameraEn +
+        lightingEn +
+        ratioEn +
+        '\n\nStyle inspired by highly detailed Japanese fantasy anime art, ethereal lighting, dreamy atmosphere, delicate textures, masterpiece, ultra detailed, 8k.' +
+        '\n\nNegative prompt: low quality, blurry, extra fingers, bad anatomy, distorted face, cropped, text, watermark, poorly drawn hands, oversaturated, low detail.';
 
       document.getElementById('outputJa').value = promptJa;
       document.getElementById('outputEn').value = promptEn;
@@ -368,6 +528,8 @@
       output.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(output.value).then(function() {
         alert('コピーしました！');
+      }).catch(function() {
+        alert('コピーできませんでした。テキストを選択して手動でコピーしてください。');
       });
     }
 
@@ -378,6 +540,10 @@
       document.getElementById('sky').value = 'fullMoon';
       document.getElementById('mood').value = 'peaceful';
       document.getElementById('color').value = 'purpleBlue';
+      document.getElementById('ratio').value = '16:9';
+      document.getElementById('artStyle').value = 'anime';
+      document.getElementById('camera').value = 'wideShot';
+      document.getElementById('lighting').value = 'moonLight';
       document.getElementById('customJa').value = '';
       document.getElementById('customEn').value = '';
       generatePrompt();
