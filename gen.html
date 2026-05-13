@@ -1,1 +1,394 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>幻想アニメ風プロンプトメーカー</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #171437, #33215f 45%, #6d4fa3);
+      color: #fff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container { max-width: 1080px; margin: 0 auto; }
+    .hero { text-align: center; margin-bottom: 32px; }
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      color: #f6d8ff;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.2;
+      margin: 0 0 16px;
+      letter-spacing: 0.04em;
+    }
+    .lead {
+      color: #eadfff;
+      font-size: 16px;
+      line-height: 1.9;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.28);
+      backdrop-filter: blur(16px);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    label { font-size: 14px; color: #f7eaff; font-weight: 700; }
+    select, input, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.9);
+      color: #272039;
+      font-size: 15px;
+      outline: none;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: #ffd6ff;
+      box-shadow: 0 0 0 4px rgba(255,214,255,0.25);
+    }
+    .full { grid-column: 1 / -1; }
+    .buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+    .primary { background: linear-gradient(135deg, #ffd1fb, #b9a7ff); color: #2b2145; }
+    .secondary {
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.28);
+    }
+    button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .result {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .result-box h2 { margin: 0 0 12px; font-size: 20px; }
+    textarea.output {
+      min-height: 310px;
+      line-height: 1.8;
+      resize: vertical;
+      background: rgba(255,255,255,0.92);
+    }
+    .tips {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .tip {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 18px;
+      padding: 16px;
+      color: #efe5ff;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    @media (max-width: 760px) {
+      body { padding: 28px 14px; }
+      .panel { padding: 20px; border-radius: 22px; }
+      .grid, .tips, .result { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div class="badge">Dreamy Fantasy Prompt Maker</div>
+      <h1>幻想アニメ風<br>プロンプトメーカー</h1>
+      <p class="lead">日本語で項目を選ぶだけで、日本語プロンプトと英語プロンプトを同時に生成できます。不要な項目は「なし」を選べます。</p>
+    </section>
+
+    <section class="panel">
+      <div class="grid">
+        <div class="field">
+          <label for="person">人物</label>
+          <select id="person">
+            <option value="none">なし</option>
+            <option value="youngWomanCat" selected>若い女性と黒猫</option>
+            <option value="lonelyGirl">白いワンピースの少女</option>
+            <option value="kimonoWoman">着物姿の女性</option>
+            <option value="traveler">ランタンを持った旅人</option>
+            <option value="lovers">星空を見上げる恋人たち</option>
+            <option value="childFlowers">花を抱えた子ども</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="place">風景・場所</label>
+          <select id="place">
+            <option value="none">なし</option>
+            <option value="moonSeaTown" selected>月明かりに照らされた海辺の街</option>
+            <option value="floatingIsland">空に浮かぶ島</option>
+            <option value="japaneseShrine">静かな日本の神社</option>
+            <option value="lavenderField">ラベンダー畑</option>
+            <option value="snowVillage">雪に包まれた山間の村</option>
+            <option value="castleTown">幻想的な城下町</option>
+            <option value="sunsetBeach">夕暮れの砂浜</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="items">小物・装飾</label>
+          <select id="items">
+            <option value="none">なし</option>
+            <option value="lanternsStars" selected>光るランタン、キャンドル、花、吊るされた星飾り</option>
+            <option value="petalsBottles">舞い散る花びら、ガラス瓶、やわらかなキャンドルの灯り</option>
+            <option value="crystalsBooks">光る水晶、古い本、星のオーナメント</option>
+            <option value="paperLanterns">和紙の灯籠、桜、蛍</option>
+            <option value="laceMoonFlowers">月の花、レースのカーテン、きらめく光の粒</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sky">空・時間帯</label>
+          <select id="sky">
+            <option value="none">なし</option>
+            <option value="fullMoon" selected>大きな満月ときらめく星空</option>
+            <option value="twilightStars">夕暮れと流れ星</option>
+            <option value="aurora">オーロラが広がる夜空</option>
+            <option value="goldenSunset">黄金色の夕焼け</option>
+            <option value="snowStars">星空の下で静かに降る雪</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="mood">雰囲気</label>
+          <select id="mood">
+            <option value="none">なし</option>
+            <option value="peaceful" selected>穏やかで感情的</option>
+            <option value="nostalgic">切なくノスタルジック</option>
+            <option value="romantic">ロマンチックで魔法のよう</option>
+            <option value="mysterious">神秘的で夢のよう</option>
+            <option value="warm">あたたかく心地よい</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="color">色調</label>
+          <select id="color">
+            <option value="none">なし</option>
+            <option value="purpleBlue" selected>紫と青を基調にした幻想的な色調</option>
+            <option value="pinkPastel">淡いピンクのパステルカラー</option>
+            <option value="navySilver">深いネイビーとシルバー</option>
+            <option value="greenGold">エメラルドグリーンとゴールド</option>
+            <option value="sunsetOrange">夕焼けのようなオレンジ</option>
+            <option value="whiteGold">やわらかな白とゴールド</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="customJa">追加したい要素・日本語</label>
+          <input id="customJa" type="text" placeholder="例：透明感のある海、流れ星、ヴィンテージの窓辺 など" />
+        </div>
+
+        <div class="field full">
+          <label for="customEn">追加したい要素・英語</label>
+          <input id="customEn" type="text" placeholder="例：transparent ocean, shooting stars, vintage window side" />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="generatePrompt()">プロンプトを生成</button>
+        <button class="secondary" onclick="copyText('outputJa')">日本語をコピー</button>
+        <button class="secondary" onclick="copyText('outputEn')">英語をコピー</button>
+        <button class="secondary" onclick="resetForm()">リセット</button>
+      </div>
+
+      <div class="result">
+        <div class="result-box">
+          <h2>日本語プロンプト</h2>
+          <textarea id="outputJa" class="output" readonly></textarea>
+        </div>
+        <div class="result-box">
+          <h2>English Prompt</h2>
+          <textarea id="outputEn" class="output" readonly></textarea>
+        </div>
+      </div>
+
+      <div class="tips">
+        <div class="tip"><strong>幻想感UP：</strong><br>発光感、きらめく粒子、魔法のような空気感</div>
+        <div class="tip"><strong>背景を豪華に：</strong><br>細密な背景、映画のような構図、奥行き</div>
+        <div class="tip"><strong>光を綺麗に：</strong><br>やわらかな光、月明かり、光の反射、空気感のある光</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const data = {
+      person: {
+        none: { ja: '', en: '' },
+        youngWomanCat: { ja: '若い女性と黒猫', en: 'a young woman and a black cat' },
+        lonelyGirl: { ja: '白いワンピースを着た孤独な少女', en: 'a lonely girl in a white dress' },
+        kimonoWoman: { ja: '着物姿の女性', en: 'a young woman in kimono' },
+        traveler: { ja: 'ランタンを持った旅人', en: 'a traveler holding a lantern' },
+        lovers: { ja: '星空を見上げる恋人たち', en: 'two lovers watching the sky' },
+        childFlowers: { ja: '花を抱えた子ども', en: 'a child holding flowers' }
+      },
+      place: {
+        none: { ja: '', en: '' },
+        moonSeaTown: { ja: '月明かりに照らされた海辺の街', en: 'a moonlit seaside town' },
+        floatingIsland: { ja: '空に浮かぶ幻想的な島', en: 'a floating island in the sky' },
+        japaneseShrine: { ja: '静かな日本の神社', en: 'a quiet Japanese shrine' },
+        lavenderField: { ja: '一面に広がるラベンダー畑', en: 'a lavender flower field' },
+        snowVillage: { ja: '雪に包まれた山間の村', en: 'a snowy mountain village' },
+        castleTown: { ja: '幻想的な城下町', en: 'a fantasy castle town' },
+        sunsetBeach: { ja: '夕暮れの砂浜', en: 'a sunset beach' }
+      },
+      items: {
+        none: { ja: '', en: '' },
+        lanternsStars: { ja: '光るランタン、キャンドル、花、吊るされた星飾り', en: 'glowing lanterns, candles, flowers, and hanging stars' },
+        petalsBottles: { ja: '舞い散る花びら、ガラス瓶、やわらかなキャンドルの灯り', en: 'floating petals, glass bottles, and soft candle lights' },
+        crystalsBooks: { ja: '光る水晶、古い本、星のオーナメント', en: 'glowing crystals, vintage books, and star ornaments' },
+        paperLanterns: { ja: '和紙の灯籠、桜、蛍', en: 'paper lanterns, cherry blossoms, and fireflies' },
+        laceMoonFlowers: { ja: '月の花、レースのカーテン、きらめく光の粒', en: 'moon flowers, lace curtains, and sparkling particles' }
+      },
+      sky: {
+        none: { ja: '', en: '' },
+        fullMoon: { ja: '大きな満月ときらめく星空の下', en: 'under a giant full moon and sparkling night sky' },
+        twilightStars: { ja: '夕暮れと流れ星が広がる空の下', en: 'during twilight with shooting stars' },
+        aurora: { ja: 'オーロラが広がる夜空の下', en: 'under aurora lights' },
+        goldenSunset: { ja: '黄金色の夕焼けの中', en: 'during golden sunset' },
+        snowStars: { ja: '星空の下で静かに雪が降る中', en: 'with gentle snowfall under the stars' }
+      },
+      mood: {
+        none: { ja: '', en: '' },
+        peaceful: { ja: '穏やかで感情的な雰囲気', en: 'peaceful and emotional' },
+        nostalgic: { ja: '切なくノスタルジックな雰囲気', en: 'melancholic and nostalgic' },
+        romantic: { ja: 'ロマンチックで魔法のような雰囲気', en: 'romantic and magical' },
+        mysterious: { ja: '神秘的で夢のような雰囲気', en: 'mysterious and dreamy' },
+        warm: { ja: 'あたたかく心地よい雰囲気', en: 'warm and comforting' }
+      },
+      color: {
+        none: { ja: '', en: '' },
+        purpleBlue: { ja: '紫と青を基調にした幻想的な色調', en: 'purple and blue tones' },
+        pinkPastel: { ja: '淡いピンクのパステルカラー', en: 'pink pastel tones' },
+        navySilver: { ja: '深いネイビーとシルバーの色調', en: 'deep navy and silver tones' },
+        greenGold: { ja: 'エメラルドグリーンとゴールドの色調', en: 'emerald green and gold tones' },
+        sunsetOrange: { ja: '夕焼けのようなオレンジの色調', en: 'warm sunset orange tones' },
+        whiteGold: { ja: 'やわらかな白とゴールドの色調', en: 'soft white and gold tones' }
+      }
+    };
+
+    function getSelected(category, id) {
+      const key = document.getElementById(id).value;
+      return data[category][key] || { ja: '', en: '' };
+    }
+
+    function joinJa(parts) {
+      return parts.filter(Boolean).join('');
+    }
+
+    function joinEn(parts) {
+      return parts.filter(Boolean).join('');
+    }
+
+    function generatePrompt() {
+      const person = getSelected('person', 'person');
+      const place = getSelected('place', 'place');
+      const items = getSelected('items', 'items');
+      const sky = getSelected('sky', 'sky');
+      const mood = getSelected('mood', 'mood');
+      const color = getSelected('color', 'color');
+      const customJa = document.getElementById('customJa').value.trim();
+      const customEn = document.getElementById('customEn').value.trim();
+
+      const introJa = joinJa([
+        '幻想的なアニメ風イラスト。',
+        person.ja ? person.ja + 'がいる。' : '',
+        place.ja ? '舞台は' + place.ja + '。' : '',
+        items.ja ? '周囲には' + items.ja + '。' : '',
+        sky.ja ? sky.ja + '。' : ''
+      ]);
+
+      const moodJa = mood.ja ? '全体は' + mood.ja + 'で、' : '全体は';
+      const colorJa = color.ja ? '\n\n色調：' + color.ja + '。' : '';
+      const addJa = customJa ? '\n\n追加要素：' + customJa + '。' : '';
+
+      const promptJa = introJa + '\n\n' + moodJa + '発光する光、きらめく粒子、映画のような構図、細密な背景、やわらかなライティング、魔法のような空気感、美しい反射、繊細な質感、奥行きのある光を表現する。' + addJa + colorJa + '\n\n高品質な日本の幻想アニメ風、透明感のある光、夢のような世界観、繊細な描き込み、超高精細、masterpiece、8k。\n\nネガティブプロンプト：低品質、ぼやけ、指の崩れ、人体の崩れ、顔の歪み、切れた構図、文字、透かし、不自然な手、彩度が強すぎる、低解像度。';
+
+      const introEn = joinEn([
+        'A dreamy fantasy anime illustration',
+        person.en ? ' of ' + person.en : '',
+        place.en ? ' in ' + place.en : '',
+        items.en ? ', surrounded by ' + items.en : '',
+        sky.en ? ', ' + sky.en : '',
+        '.'
+      ]);
+
+      const moodEn = mood.en ? 'The atmosphere is ' + mood.en + ', with ' : 'With ';
+      const colorEn = color.en ? '\n\nColor palette: ' + color.en + '.' : '';
+      const addEn = customEn ? '\n\nAdditional elements: ' + customEn + '.' : '';
+
+      const promptEn = introEn + '\n\n' + moodEn + 'glowing lights, sparkling particles, cinematic composition, ultra detailed background, soft lighting, magical ambiance, beautiful reflections, delicate textures, and volumetric light.' + addEn + colorEn + '\n\nStyle inspired by highly detailed Japanese fantasy anime art, ethereal lighting, dreamy atmosphere, delicate textures, masterpiece, ultra detailed, 8k.\n\nNegative prompt: low quality, blurry, extra fingers, bad anatomy, distorted face, cropped, text, watermark, poorly drawn hands, oversaturated, low detail.';
+
+      document.getElementById('outputJa').value = promptJa;
+      document.getElementById('outputEn').value = promptEn;
+    }
+
+    function copyText(id) {
+      const output = document.getElementById(id);
+      output.select();
+      output.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(output.value).then(function() {
+        alert('コピーしました！');
+      });
+    }
+
+    function resetForm() {
+      document.getElementById('person').value = 'youngWomanCat';
+      document.getElementById('place').value = 'moonSeaTown';
+      document.getElementById('items').value = 'lanternsStars';
+      document.getElementById('sky').value = 'fullMoon';
+      document.getElementById('mood').value = 'peaceful';
+      document.getElementById('color').value = 'purpleBlue';
+      document.getElementById('customJa').value = '';
+      document.getElementById('customEn').value = '';
+      generatePrompt();
+    }
+
+    document.querySelectorAll('select, input').forEach(function(el) {
+      el.addEventListener('change', generatePrompt);
+      el.addEventListener('input', generatePrompt);
+    });
+
+    generatePrompt();
+  </script>
+</body>
+</html>
