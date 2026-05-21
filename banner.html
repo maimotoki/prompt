@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>バナープロンプトメーカー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f4f0; --surface: #fff; --surface2: #f8f7f3;
+    --border: #e5e3dd; --text: #1a1a1a; --text2: #666; --text3: #999;
+    --accent: #ff6b47; --success: #22c55e; --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 1.5rem; }
+  header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  header p { font-size: 14px; color: var(--text2); }
+  .how-to { background: #fff8f6; border: 1px solid #fdd5c9; border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; line-height: 1.8; }
+  .how-to strong { color: var(--accent); }
+  .how-to ol { padding-left: 1.2rem; }
+  .genre-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .genre-tab { padding: 8px 14px; border-radius: 99px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.15s; white-space: nowrap; }
+  .genre-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .genre-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .genre-pane { display: none; }
+  .genre-pane.active { display: block; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.25rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 14px; }
+  .full { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .field input, .field select, .field textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'Noto Sans JP', sans-serif; background: var(--surface); color: var(--text); transition: border-color 0.15s; width: 100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); }
+  .field textarea { min-height: 68px; resize: vertical; line-height: 1.6; }
+  .opt { display: inline-block; font-size: 10px; padding: 1px 6px; background: var(--surface2); border-radius: 99px; color: var(--text3); margin-left: 4px; }
+  .design-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .output-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; }
+  .output-header { padding: 1rem 1.25rem 0; font-size: 12px; font-weight: 700; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; }
+  .output-body { padding: 1rem 1.25rem 1.25rem; }
+  .output-text { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; word-break: break-all; line-height: 1.7; min-height: 160px; color: var(--text); }
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  .btn { display: flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: 500; }
+  .btn:hover { background: var(--surface2); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn.primary:hover { background: #e55a38; }
+  .btn.success { border-color: var(--success); color: var(--success); background: #f0fdf4; }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .genre-tab { font-size: 12px; padding: 7px 10px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🎨 バナープロンプトメーカー</h1>
+    <p>GPT Image 2（ChatGPT）用プロンプトを自動生成 ｜ 6業種対応</p>
+  </header>
+
+  <div class="how-to">
+    <strong>使い方：</strong>
+    <ol>
+      <li>業種タブを選んでフォームに入力する</li>
+      <li>下部にプロンプトが自動生成される</li>
+      <li>「コピーする」を押してChatGPTに貼り付けるだけ</li>
+    </ol>
+  </div>
+
+  <div class="genre-tabs">
+    <button class="genre-tab active" onclick="switchGenre('event',this)">🎪 イベント</button>
+    <button class="genre-tab" onclick="switchGenre('beauty',this)">💄 美容・サロン</button>
+    <button class="genre-tab" onclick="switchGenre('learning',this)">📚 学習・スクール</button>
+    <button class="genre-tab" onclick="switchGenre('food',this)">🍽️ 飲食・カフェ</button>
+    <button class="genre-tab" onclick="switchGenre('fitness',this)">💪 フィットネス</button>
+    <button class="genre-tab" onclick="switchGenre('realestate',this)">🏠 不動産・住宅</button>
+  </div>
+
+  <!-- イベント -->
+  <div class="genre-pane active" id="pane-event">
+    <div class="card"><div class="card-title">イベント・ワークショップ情報</div><div class="grid">
+      <div class="field"><label>イベント名 <span style="color:#ef4444">*</span></label><input type="text" id="ev-name" placeholder="例：AI活用ワークショップ" oninput="update()"></div>
+      <div class="field"><label>開催日時</label><input type="text" id="ev-date" placeholder="例：6月15日（日）14:00〜16:00" oninput="update()"></div>
+      <div class="field"><label>開催場所</label><select id="ev-place" onchange="update()"><option value="オンライン（Zoom）">オンライン（Zoom）</option><option value="会場開催">会場開催</option><option value="ハイブリッド開催">ハイブリッド</option></select></div>
+      <div class="field"><label>参加費</label><select id="ev-fee" onchange="evFeeChange()"><option value="free">無料</option><option value="paid">有料</option><option value="early">有料（早割あり）</option></select></div>
+      <div class="field" id="ev-fee-box" style="display:none"><label>金額</label><input type="text" id="ev-fee-text" placeholder="例：¥3,000（早割¥2,000）" oninput="update()"></div>
+      <div class="field"><label>定員 <span class="opt">任意</span></label><input type="text" id="ev-cap" placeholder="例：先着20名" oninput="update()"></div>
+      <div class="field"><label>残席 <span class="opt">任意</span></label><input type="text" id="ev-seats" placeholder="例：残り8席" oninput="update()"></div>
+      <div class="field"><label>申込締切 <span class="opt">任意</span></label><input type="text" id="ev-deadline" placeholder="例：6月10日" oninput="update()"></div>
+      <div class="field"><label>主催者名</label><input type="text" id="ev-host" placeholder="例：デプロイダー" oninput="update()"></div>
+      <div class="field full"><label>イベント内容</label><textarea id="ev-content" placeholder="例：AIを使ってSNS投稿を仕組み化する2時間のワークショップ" oninput="update()"></textarea></div>
+      <div class="field full"><label>参加するとどうなるか</label><textarea id="ev-benefit" placeholder="例：毎週の投稿が30分で完成・ネタ切れ解消" oninput="update()"></textarea></div>
+      <div class="field"><label>ターゲット</label><input type="text" id="ev-target" placeholder="例：SNS発信に疲れてきた副業初心者" oninput="update()"></div>
+      <div class="field"><label>CTA</label><select id="ev-cta" onchange="update()"><option value="プロフィールのリンクから申し込む">プロフィールのリンクから申し込む</option><option value="DMで申し込む">DMで申し込む</option><option value="今すぐ申し込む">今すぐ申し込む</option><option value="無料で参加する">無料で参加する</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- 美容 -->
+  <div class="genre-pane" id="pane-beauty">
+    <div class="card"><div class="card-title">美容・コスメ・サロン情報</div><div class="grid">
+      <div class="field"><label>ブランド名・サロン名 <span style="color:#ef4444">*</span></label><input type="text" id="bt-brand" placeholder="例：LUMINOUS SKIN" oninput="update()"></div>
+      <div class="field"><label>商品名・メニュー名</label><input type="text" id="bt-product" placeholder="例：薬用美白美容液" oninput="update()"></div>
+      <div class="field"><label>カテゴリ</label><select id="bt-cat" onchange="update()"><option value="スキンケア商品">スキンケア商品</option><option value="コスメ・メイク">コスメ・メイク</option><option value="美容サロン・エステ">美容サロン・エステ</option><option value="ネイルサロン">ネイルサロン</option><option value="ヘアサロン">ヘアサロン</option><option value="まつ毛・眉毛サロン">まつ毛・眉毛サロン</option></select></div>
+      <div class="field"><label>価格・料金</label><input type="text" id="bt-price" placeholder="例：¥3,980 / 初回体験¥5,500" oninput="update()"></div>
+      <div class="field"><label>ターゲット</label><input type="text" id="bt-target" placeholder="例：30代・敏感肌・美容初心者" oninput="update()"></div>
+      <div class="field"><label>キャンペーン <span class="opt">任意</span></label><input type="text" id="bt-campaign" placeholder="例：初回限定30%OFF" oninput="update()"></div>
+      <div class="field full"><label>特徴・強み</label><textarea id="bt-feature" placeholder="例：無添加・医師監修・敏感肌でも使える" oninput="update()"></textarea></div>
+      <div class="field full"><label>使用するとどうなるか</label><textarea id="bt-benefit" placeholder="例：透明感あふれる素肌へ" oninput="update()"></textarea></div>
+      <div class="field"><label>CTA</label><select id="bt-cta" onchange="update()"><option value="今すぐチェック">今すぐチェック</option><option value="プロフィールのリンクから購入">プロフィールのリンクから購入</option><option value="無料サンプルを申し込む">無料サンプルを申し込む</option><option value="初回体験を予約する">初回体験を予約する</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- 学習 -->
+  <div class="genre-pane" id="pane-learning">
+    <div class="card"><div class="card-title">学習・スクール・講座情報</div><div class="grid">
+      <div class="field"><label>スクール名・講座名 <span style="color:#ef4444">*</span></label><input type="text" id="lc-name" placeholder="例：AI副業スクール" oninput="update()"></div>
+      <div class="field"><label>カテゴリ</label><select id="lc-cat" onchange="update()"><option value="オンライン講座">オンライン講座</option><option value="対面スクール">対面スクール</option><option value="動画教材">動画教材</option><option value="マンツーマンレッスン">マンツーマンレッスン</option><option value="グループレッスン">グループレッスン</option></select></div>
+      <div class="field"><label>受講期間</label><input type="text" id="lc-period" placeholder="例：3ヶ月・全12回" oninput="update()"></div>
+      <div class="field"><label>受講料</label><input type="text" id="lc-price" placeholder="例：¥98,000 / 月額¥9,800" oninput="update()"></div>
+      <div class="field"><label>対象者</label><input type="text" id="lc-target" placeholder="例：副業初心者・未経験者歓迎" oninput="update()"></div>
+      <div class="field"><label>キャンペーン <span class="opt">任意</span></label><input type="text" id="lc-campaign" placeholder="例：今月限定入会金無料" oninput="update()"></div>
+      <div class="field full"><label>講座の特徴・内容</label><textarea id="lc-feature" placeholder="例：現役プロが教える・実践カリキュラム・就職支援あり" oninput="update()"></textarea></div>
+      <div class="field full"><label>受講するとどうなるか</label><textarea id="lc-benefit" placeholder="例：未経験から3ヶ月でWebデザイナーに" oninput="update()"></textarea></div>
+      <div class="field"><label>CTA</label><select id="lc-cta" onchange="update()"><option value="無料説明会に申し込む">無料説明会に申し込む</option><option value="今すぐ無料体験レッスン">今すぐ無料体験レッスン</option><option value="資料請求はプロフィールから">資料請求はプロフィールから</option><option value="DMでお問い合わせ">DMでお問い合わせ</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- 飲食 -->
+  <div class="genre-pane" id="pane-food">
+    <div class="card"><div class="card-title">飲食・カフェ情報</div><div class="grid">
+      <div class="field"><label>店名 <span style="color:#ef4444">*</span></label><input type="text" id="fd-name" placeholder="例：Cafe HANA" oninput="update()"></div>
+      <div class="field"><label>カテゴリ</label><select id="fd-cat" onchange="update()"><option value="カフェ・コーヒーショップ">カフェ・コーヒーショップ</option><option value="レストラン・洋食">レストラン・洋食</option><option value="和食・割烹">和食・割烹</option><option value="焼肉・肉料理">焼肉・肉料理</option><option value="ラーメン・麺類">ラーメン・麺類</option><option value="スイーツ・ケーキ">スイーツ・ケーキ</option></select></div>
+      <div class="field"><label>おすすめメニュー</label><input type="text" id="fd-menu" placeholder="例：黒毛和牛ハンバーグ" oninput="update()"></div>
+      <div class="field"><label>価格帯</label><input type="text" id="fd-price" placeholder="例：ランチ¥1,200〜" oninput="update()"></div>
+      <div class="field"><label>場所・アクセス <span class="opt">任意</span></label><input type="text" id="fd-location" placeholder="例：渋谷駅徒歩3分" oninput="update()"></div>
+      <div class="field"><label>営業時間 <span class="opt">任意</span></label><input type="text" id="fd-hours" placeholder="例：11:00〜22:00（月曜定休）" oninput="update()"></div>
+      <div class="field"><label>キャンペーン <span class="opt">任意</span></label><input type="text" id="fd-campaign" placeholder="例：期間限定メニュー登場" oninput="update()"></div>
+      <div class="field full"><label>お店・メニューの特徴</label><textarea id="fd-feature" placeholder="例：地元産の新鮮食材・シェフこだわりのソース" oninput="update()"></textarea></div>
+      <div class="field"><label>CTA</label><select id="fd-cta" onchange="update()"><option value="ご予約はプロフィールのリンクから">ご予約はプロフィールのリンクから</option><option value="DMで予約受付中">DMで予約受付中</option><option value="詳しくはプロフィールへ">詳しくはプロフィールへ</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- フィットネス -->
+  <div class="genre-pane" id="pane-fitness">
+    <div class="card"><div class="card-title">健康・フィットネス情報</div><div class="grid">
+      <div class="field"><label>ジム・サービス名 <span style="color:#ef4444">*</span></label><input type="text" id="ft-name" placeholder="例：BODY MAKE GYM" oninput="update()"></div>
+      <div class="field"><label>カテゴリ</label><select id="ft-cat" onchange="update()"><option value="パーソナルトレーニング">パーソナルトレーニング</option><option value="フィットネスジム">フィットネスジム</option><option value="ヨガ・ピラティス">ヨガ・ピラティス</option><option value="オンラインフィットネス">オンラインフィットネス</option><option value="ダイエットプログラム">ダイエットプログラム</option></select></div>
+      <div class="field"><label>料金</label><input type="text" id="ft-price" placeholder="例：月額¥9,800・初回体験¥3,300" oninput="update()"></div>
+      <div class="field"><label>期間・頻度</label><input type="text" id="ft-period" placeholder="例：3ヶ月プログラム・週2回" oninput="update()"></div>
+      <div class="field"><label>ターゲット</label><input type="text" id="ft-target" placeholder="例：運動初心者・産後ママ" oninput="update()"></div>
+      <div class="field"><label>キャンペーン <span class="opt">任意</span></label><input type="text" id="ft-campaign" placeholder="例：入会金無料・体験1回無料" oninput="update()"></div>
+      <div class="field full"><label>サービスの特徴</label><textarea id="ft-feature" placeholder="例：完全個室・女性専用・管理栄養士監修" oninput="update()"></textarea></div>
+      <div class="field full"><label>利用するとどうなるか</label><textarea id="ft-benefit" placeholder="例：3ヶ月でマイナス10kg・理想のボディラインを実現" oninput="update()"></textarea></div>
+      <div class="field"><label>CTA</label><select id="ft-cta" onchange="update()"><option value="無料体験はプロフィールのリンクから">無料体験はプロフィールのリンクから</option><option value="DMで体験予約受付中">DMで体験予約受付中</option><option value="今すぐ申し込む">今すぐ申し込む</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- 不動産 -->
+  <div class="genre-pane" id="pane-realestate">
+    <div class="card"><div class="card-title">不動産・住宅情報</div><div class="grid">
+      <div class="field"><label>物件名・会社名 <span style="color:#ef4444">*</span></label><input type="text" id="re-name" placeholder="例：グランドハイツ渋谷" oninput="update()"></div>
+      <div class="field"><label>カテゴリ</label><select id="re-cat" onchange="update()"><option value="賃貸マンション・アパート">賃貸マンション・アパート</option><option value="分譲マンション">分譲マンション</option><option value="一戸建て・注文住宅">一戸建て・注文住宅</option><option value="リノベーション物件">リノベーション物件</option><option value="不動産投資・収益物件">不動産投資・収益物件</option></select></div>
+      <div class="field"><label>価格・家賃</label><input type="text" id="re-price" placeholder="例：月額¥85,000〜" oninput="update()"></div>
+      <div class="field"><label>エリア・立地</label><input type="text" id="re-area" placeholder="例：渋谷区・駅徒歩5分" oninput="update()"></div>
+      <div class="field"><label>間取り・広さ <span class="opt">任意</span></label><input type="text" id="re-layout" placeholder="例：1LDK〜3LDK" oninput="update()"></div>
+      <div class="field"><label>キャンペーン <span class="opt">任意</span></label><input type="text" id="re-campaign" placeholder="例：仲介手数料無料" oninput="update()"></div>
+      <div class="field full"><label>物件・サービスの特徴</label><textarea id="re-feature" placeholder="例：新築・オートロック・ペット可・リモートワーク対応" oninput="update()"></textarea></div>
+      <div class="field full"><label>ターゲット・おすすめの人</label><textarea id="re-target" placeholder="例：子育てファミリー・投資目的の方" oninput="update()"></textarea></div>
+      <div class="field"><label>CTA</label><select id="re-cta" onchange="update()"><option value="内見予約はプロフィールのリンクから">内見予約はプロフィールのリンクから</option><option value="DMでお気軽にご相談ください">DMでお気軽にご相談ください</option><option value="無料相談はこちら">無料相談はこちら</option></select></div>
+    </div></div>
+  </div>
+
+  <!-- 共通デザイン -->
+  <div class="design-section">
+    <div class="card-title">デザイン指定（共通）</div>
+    <div class="grid">
+      <div class="field"><label>カラーイメージ</label><select id="d-color" onchange="colorChange()"><option value="ネイビー×オレンジ×白">ネイビー×オレンジ×白（プロフェッショナル）</option><option value="ピンク×白×ゴールド">ピンク×白×ゴールド（美容・女性向け）</option><option value="グリーン×ベージュ×白">グリーン×ベージュ×白（ナチュラル）</option><option value="ブラック×ゴールド×白">ブラック×ゴールド×白（高級感）</option><option value="オレンジ×イエロー×白">オレンジ×イエロー×白（明るい）</option><option value="パープル×白×シルバー">パープル×白×シルバー（クリエイティブ）</option><option value="レッド×白×ゴールド">レッド×白×ゴールド（情熱・食欲）</option><option value="ブルー×白×グレー">ブルー×白×グレー（信頼・清潔感）</option><option value="custom">カスタム入力</option></select></div>
+      <div class="field" id="d-color-box" style="display:none"><label>カラー（カスタム）</label><input type="text" id="d-color-text" placeholder="例：赤×白×金" oninput="update()"></div>
+      <div class="field"><label>雰囲気</label><select id="d-mood" onchange="update()"><option value="プロフェッショナルかつ親しみやすい">プロフェッショナル＋親しみやすい</option><option value="高級感・洗練されたイメージ">高級感・洗練</option><option value="明るく元気・ポップ">明るい・ポップ</option><option value="ナチュラル・温かみがある">ナチュラル・温かみ</option><option value="シンプルでスタイリッシュ">シンプル・スタイリッシュ</option><option value="かわいい・ガーリー">かわいい・ガーリー</option></select></div>
+      <div class="field"><label>レイアウト</label><select id="d-layout" onchange="update()"><option value="上部にビジュアル・下部にテキスト情報">上部ビジュアル・下部テキスト</option><option value="左半分テキスト・右半分画像">左テキスト・右画像</option><option value="中央揃え・シンメトリー">中央揃え</option><option value="全面画像にテキスト重ね">全面画像にテキスト重ね</option></select></div>
+      <div class="field"><label>フォントスタイル</label><select id="d-font" onchange="update()"><option value="太くてインパクト重視">太字・インパクト重視</option><option value="細めで上品・エレガント">細め・上品</option><option value="丸みがあって親しみやすい">丸み・親しみやすい</option><option value="明朝体で和風・高級感">明朝体・和風</option></select></div>
+      <div class="field"><label>背景</label><select id="d-bg" onchange="update()"><option value="デジタル・テック感のある抽象的なグラデーション">デジタル・テック系</option><option value="シンプルな単色背景">シンプル単色</option><option value="花や植物の写真">花・植物</option><option value="テクスチャ感のある紙・布素材風">紙・布テクスチャ</option><option value="明るいスタジオ風・白背景">明るい白背景</option><option value="高級感のある大理石テクスチャ">大理石テクスチャ</option></select></div>
+      <div class="field"><label>装飾スタイル</label><select id="d-deco" onchange="update()"><option value="バッジ・吹き出しあり・重要情報は赤で強調">バッジ・吹き出しあり</option><option value="フレーム・枠線あり・シンプル">フレーム・枠線</option><option value="金箔・ゴールドラインで高級感">ゴールドライン</option><option value="手書き風の線やアイコン">手書き風</option><option value="シンプルミニマル・装飾なし">ミニマル</option></select></div>
+      <div class="field"><label>参考イメージ</label><select id="d-ref" onchange="update()"><option value="Udemyのような学習系・セミナー告知風">Udemy風・学習系</option><option value="資生堂のような高級美容ブランド風">資生堂風・高級感</option><option value="韓国コスメ風・おしゃれ系">韓国コスメ風</option><option value="無印良品のようなシンプル">無印良品風</option><option value="Canvaのテンプレートのようなポップ">Canva風・ポップ</option><option value="高級ホテルのような上品さ">高級ホテル風</option></select></div>
+      <div class="field"><label>サイズ</label><select id="d-size" onchange="update()"><option value="1024×1024px（Instagram正方形投稿）">Instagram正方形　1024×1024px</option><option value="1024×1280px（Instagram縦長投稿）">Instagram縦長　1024×1280px</option><option value="1024×1536px（Instagramストーリーズ）">ストーリーズ　1024×1536px</option><option value="1536×1024px（noteサムネイル）">noteサムネイル　1536×1024px</option><option value="1536×1024px（X投稿・Facebookバナー）">X・Facebook　1536×1024px</option></select></div>
+    </div>
+  </div>
+
+  <!-- 出力 -->
+  <div class="output-card">
+    <div class="output-header">生成されたプロンプト</div>
+    <div class="output-body">
+      <div class="output-text" id="output">← 業種タブを選んでフォームを入力するとプロンプトが生成されます</div>
+      <div class="btn-row">
+        <button class="btn primary" id="copy-btn" onclick="copyPrompt()">📋 コピーする</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+let currentGenre='event';
+function v(id){return(document.getElementById(id)||{}).value||'';}
+function switchGenre(g,el){
+  currentGenre=g;
+  document.querySelectorAll('.genre-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.querySelectorAll('.genre-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+g).classList.add('active');
+  update();
+}
+function evFeeChange(){document.getElementById('ev-fee-box').style.display=(v('ev-fee')==='paid'||v('ev-fee')==='early')?'':'none';update();}
+function colorChange(){document.getElementById('d-color-box').style.display=v('d-color')==='custom'?'':'none';update();}
+function getColor(){return v('d-color')==='custom'?(v('d-color-text')||'【カラーを入力】'):v('d-color');}
+function getEvFee(){if(v('ev-fee')==='free')return '無料';return v('ev-fee-text')||'【金額を入力】';}
+function getDesign(){return `カラー：${getColor()}\n雰囲気：${v('d-mood')}\nレイアウト：${v('d-layout')}\nフォントスタイル：${v('d-font')}\n背景：${v('d-bg')}\n装飾スタイル：${v('d-deco')}\n参考イメージ：${v('d-ref')}\nサイズ：${v('d-size')}`;}
+const conditions={
+  event:`・イベント名を最も大きく目立つように配置\n・日時・場所・参加費を見やすく整理\n・残席・締切などの緊急性を強調\n・CTAボタン風のデザインを下部に配置`,
+  beauty:`・商品名・ブランド名を大きく目立つように配置\n・価格・キャンペーン情報を見やすく整理\n・効果・ビフォーアフターをビジュアルで表現\n・CTAボタン風のデザインを下部に配置`,
+  learning:`・講座名を大きく目立つように配置\n・受講料・期間・特典を見やすく整理\n・受講後のベネフィットを強調\n・CTAボタン風のデザインを下部に配置`,
+  food:`・料理名・メニューを大きく目立つように配置\n・価格・場所を見やすく整理\n・食欲をそそるビジュアルをメインに\n・CTAボタン風のデザインを下部に配置`,
+  fitness:`・サービス名を大きく目立つように配置\n・料金・期間・特典を見やすく整理\n・変化・効果をビジュアルで表現\n・CTAボタン風のデザインを下部に配置`,
+  realestate:`・物件名を大きく目立つように配置\n・価格・立地・間取りを見やすく整理\n・物件の魅力をビジュアルで表現\n・CTAボタン風のデザインを下部に配置`
+};
+const infoBuilders={
+  event:()=>`イベント名：${v('ev-name')||'【イベント名】'}\n開催日時：${v('ev-date')||'【日時】'}\n開催場所：${v('ev-place')}\n参加費：${getEvFee()}\n定員：${v('ev-cap')||'【定員】'}\n残席：${v('ev-seats')||'【残席情報】'}\n申込締切：${v('ev-deadline')||'【申込締切】'}\n主催者名：${v('ev-host')||'【主催者名】'}\n内容：${v('ev-content')||'【イベント内容】'}\n参加するとどうなるか：${v('ev-benefit')||'【ベネフィット】'}\nターゲット：${v('ev-target')||'【ターゲット】'}\nCTA：${v('ev-cta')}`,
+  beauty:()=>`ブランド名・サロン名：${v('bt-brand')||'【ブランド名】'}\n商品名・メニュー：${v('bt-product')||'【商品名】'}\nカテゴリ：${v('bt-cat')}\n価格・料金：${v('bt-price')||'【価格】'}\nターゲット：${v('bt-target')||'【ターゲット】'}\nキャンペーン：${v('bt-campaign')||'なし'}\n特徴・強み：${v('bt-feature')||'【特徴】'}\n使用するとどうなるか：${v('bt-benefit')||'【ベネフィット】'}\nCTA：${v('bt-cta')}`,
+  learning:()=>`スクール名・講座名：${v('lc-name')||'【講座名】'}\nカテゴリ：${v('lc-cat')}\n受講期間：${v('lc-period')||'【期間】'}\n受講料：${v('lc-price')||'【料金】'}\n対象者：${v('lc-target')||'【対象者】'}\nキャンペーン：${v('lc-campaign')||'なし'}\n講座の特徴：${v('lc-feature')||'【特徴】'}\n受講するとどうなるか：${v('lc-benefit')||'【ベネフィット】'}\nCTA：${v('lc-cta')}`,
+  food:()=>`店名：${v('fd-name')||'【店名】'}\nカテゴリ：${v('fd-cat')}\nおすすめメニュー：${v('fd-menu')||'【メニュー名】'}\n価格帯：${v('fd-price')||'【価格】'}\n場所・アクセス：${v('fd-location')||'【場所】'}\n営業時間：${v('fd-hours')||'【営業時間】'}\nキャンペーン：${v('fd-campaign')||'なし'}\n特徴：${v('fd-feature')||'【特徴】'}\nCTA：${v('fd-cta')}`,
+  fitness:()=>`ジム・サービス名：${v('ft-name')||'【サービス名】'}\nカテゴリ：${v('ft-cat')}\n料金：${v('ft-price')||'【料金】'}\n期間・頻度：${v('ft-period')||'【期間】'}\nターゲット：${v('ft-target')||'【ターゲット】'}\nキャンペーン：${v('ft-campaign')||'なし'}\n特徴：${v('ft-feature')||'【特徴】'}\n利用するとどうなるか：${v('ft-benefit')||'【ベネフィット】'}\nCTA：${v('ft-cta')}`,
+  realestate:()=>`物件名・会社名：${v('re-name')||'【物件名】'}\nカテゴリ：${v('re-cat')}\n価格・家賃：${v('re-price')||'【価格】'}\nエリア・立地：${v('re-area')||'【エリア】'}\n間取り・広さ：${v('re-layout')||'【間取り】'}\nキャンペーン：${v('re-campaign')||'なし'}\n物件の特徴：${v('re-feature')||'【特徴】'}\nターゲット：${v('re-target')||'【ターゲット】'}\nCTA：${v('re-cta')}`
+};
+function update(){
+  const info=infoBuilders[currentGenre]();
+  document.getElementById('output').textContent=`==============================\n${info}\n\n--- デザイン指定 ---\n${getDesign()}\n==============================\n\n上記の情報を使って宣伝バナーを作成してください。\n\n【デザインの条件】\n${conditions[currentGenre]}\n・日本語テキストを正確に表示すること\n・上記のデザイン指定をすべて反映すること\n・指定されたサイズで出力すること`;
+}
+function copyPrompt(){
+  navigator.clipboard.writeText(document.getElementById('output').textContent).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.classList.remove('primary');btn.classList.add('success');btn.textContent='✅ コピーしました';
+    setTimeout(()=>{btn.classList.add('primary');btn.classList.remove('success');btn.textContent='📋 コピーする';},2000);
+  });
+}
+update();
+</script>
+</body>
+</html>
